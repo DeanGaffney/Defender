@@ -4,8 +4,10 @@ SRC = defender.cpp Level.cpp Pool.cpp Vector2f.cpp defender_glfw.cpp math.cpp up
 CFLAGS = -pthread 
 LFLAGS = -L/usr/local/lib -lXrandr -lrt -lX11 -lGL -lm -lGLU  -lGL -pthread -lm -lglfw
 
+default: run
+
 defender: ${SRC}
-	g++ ${CFLAGS} ${SRC} ${LFLAGS} -o defender; make run
+	g++ ${CFLAGS} ${SRC} ${LFLAGS} -o defender; 
 
 run: defender
 	./defender

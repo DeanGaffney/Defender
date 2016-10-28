@@ -3,11 +3,30 @@
 #include "defender.h"
 #include "Level.h"
 
-void Level::render() const {}
-void Ship::render() const {
+void Level::render() const {
 
-glPushMatrix();
-	glScalef(0.1, 0.08, 1);
+	//draw ceiling
+	glColor3ub(0, 10, 100);
+	glBegin(GL_QUAD_STRIP);
+	for (int k=0; k<level->ceilingLength; ++k) {
+    	glVertex3f(level->ceiling[k].x, level->ceiling[k].y, 0.0);
+    	glVertex3f(level->ceiling[k].x, 1.0, 0.0);
+	}
+	glEnd();
+	
+	 // draw ground
+	glColor3ub(0, 100, 0);
+	glBegin(GL_QUAD_STRIP);
+	for (int k=0; k<level->groundLength; ++k) {
+    	glVertex3f(level->ground[k].x, level->ground[k].y, 0.0);
+    	glVertex3f(level->ground[k].x, 0.0, 0.0);
+	}
+	glEnd();
+}
+void Ship::render() const {
+	glPushMatrix();
+		glTranslatef(position.x, position.y, 0.0f);
+		glScalef(0.1, 0.08, 1);
 		glColor3ub(0,200, 0);
 		glBegin(GL_QUADS);      
    			glVertex3f(0.0, 0.0, 0.0);
@@ -15,7 +34,7 @@ glPushMatrix();
     			glVertex3f(1.0, 0.6, 0.0);
     			glVertex3f(0.0, 1.0, 0.0);
 
-			glColor3ub(0, 0, 200);  
+				glColor3ub(0, 0, 200);  
 
     			glVertex3f(0.0, 0.47, 0.0);
     			glVertex3f(1.1, 0.47, 0.0);
@@ -62,11 +81,39 @@ int deinitGraphics() {
 }
 
 void render() {
+    // update frame timer
+	previousTime = currentTime;
+	currentTime = glfwGetTime();
+	dt = currentTime - previousTime;
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(1,0,0);
-	ship.render();
+    glPushMatrix();
+    	glTranslatef(-level->position.x, 0, 0);	//move game objects relative to level movement
+    	level->render();
+    	ship.render();
+	glPopMatrix();
     glfwSwapBuffers(); 
 }
-void getInput() {}
+void getInput() {
+	//quits the game
+	if (glfwGetKey(GLFW_KEY_ESC) || !glfwGetWindowParam(GLFW_OPENED)) {
+    	gameState = GAME_QUIT;
+    	return;
+	}
+	
+	//move ship commands
+	ship.velocity = Vector2f::ZERO;
+	if (glfwGetKey(GLFW_KEY_UP)) {
+    	ship.velocity.y = 0.7;
+	} else if (glfwGetKey(GLFW_KEY_DOWN)) {
+    	ship.velocity.y = -0.7;
+	}
+	if (glfwGetKey(GLFW_KEY_LEFT)) {
+    	ship.velocity.x = level->velocity.x-0.5;
+	} else if (glfwGetKey(GLFW_KEY_RIGHT)) {
+    	ship.velocity.x = level->velocity.x + 0.5;
+	}
+}
 #endif
 
