@@ -16,7 +16,6 @@ void Ship::update(float dt)  {
 	//restrict movement
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	
-	cout <<"Ship position " <<ship.position <<" Level " <<level->position <<endl;
 }
 
 
