@@ -191,5 +191,6 @@ void update();
 void getInput();
 void checkCollisions();
 void checkShipCollisionWithLevel(bool ceilingCheck);
-
+bool checkPointCollisionWithLevel(const Vector2f pointbool ceilingCheck);
+float distancePointFromLevel(const Vector2f point, vool ceilingCheck);
 #endif
