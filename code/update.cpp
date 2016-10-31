@@ -23,46 +23,46 @@ void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {}
 
 void checkCollisions(){
-	checkShipCollisionWithLevel(true);		//check collision with data
-	checkShipCollisionWithLevel(false);		//check collision with ground
+	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),true))cout << "ship collided with ceiling." << endl;
+	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground" << endl;		//check collision with ground
 }
 
-//function checks data and ground collision based on boolean variable
-void checkShipCollisionWithLevel(bool ceilingCheck){
+//checks distance a point is from a level
+float distancePointFromLevel(const Vector2f point, bool ceilingCheck){
 	Vector2f previousPoint;
 	Vector2f currentPoint;
+	
 	int dataLength = ceilingCheck ? level->ceilingLength : level->groundLength;
 
 	Vector2f * data = ceilingCheck ? level->ceiling : level->ground;
 	
-	for(int k=1; k < dataLength; ++k) {
-			//get the two points the ship is between
-		if(ship.position.x < data[k].x && ship.position.x > data[k - 1].x){
-				previousPoint.x = data[k-1].x;
-				previousPoint.y = data[k-1].y;
-				
-				currentPoint.x = data[k].x;
-				currentPoint.y = data[k].y;
-    			break;		
-    	}
-	}
+	int k = 1;
+	for(k=1; k < dataLength; ++k){if(point.x > data[k-1].x && data[k].x > point.x)break;}	//get the two points the ship is between	
 	
+	//set up points the point is between
+	previousPoint.x = data[k - 1].x;
+	previousPoint.y = data[k - 1].y;	
+	currentPoint.x = data[k].x;
+	currentPoint.y = data[k].y;
+	
+	//cout << "Previous point : " << previousPoint.x << "," << previousPoint.y << endl;
+	//cout << "Current point : " << currentPoint.x << "," << currentPoint.y << endl;
 	//get slope of line
 	float slope = ((previousPoint.y - currentPoint.y) / (previousPoint.x - currentPoint.x));
 	//cout << "Slope is :" << slope << endl;
-	
-	//check and see if point is above or below ground according to boolean variable.
-	if(ceilingCheck && ship.position.y > (slope * ship.position.x) + (previousPoint.y - (slope * previousPoint.x))){
-		//do something in here if we hit data
-		cout << "We are above the ceiling" << endl;
-	}else if (!ceilingCheck && ship.position.y < (slope * ship.position.x) + (previousPoint.y - (slope * previousPoint.x))){
-		//do something in here if we hit ground
-		cout << "We are below the ground" << endl;
-	}
-	
-	//checking branches
-	
+	//cout << "Distance is : " << ((slope * point.x) + (previousPoint.y - (slope * previousPoint.x))) << endl;
+	//return distance
+	return ((slope * point.x) + (previousPoint.y - (slope * previousPoint.x)));
 }
+
+//function checks data and ground collision based on boolean variable
+bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck){
+
+   float distance = distancePointFromLevel(point, ceilingCheck);
+
+   return (ceilingCheck && point.y >= distance) || (!ceilingCheck && point.y <= distance);
+}
+
 void update() {
 	level->update(dt);
 	ship.update(dt);
