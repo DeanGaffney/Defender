@@ -14,7 +14,8 @@ void Ship::update(float dt)  {
 	
 	//restrict movement
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
-	
+	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
+	cout << ASPECT << endl;
 }
 
 
@@ -27,8 +28,14 @@ void checkCollisions(){
     			//glVertex3f(1.0, 0.4, 0.0);
     			//glVertex3f(1.0, 0.6, 0.0);
     			//glVertex3f(0.0, 1.0, 0.0);
-	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),true))cout << "ship collided with ceiling." << endl;
-	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground,bottom left corner" << endl;//check collision with ground
+    			
+    			//glScalef(0.1, 0.08, 1);
+    			//ship.position is from bottom left hand corner, when ship is at end of screen y is 0
+    			//get center of ship
+    cout << "Ship Position is: "<< ship.position << endl;
+    if(checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.1,1.0*0.08),true))cout << "Ship top left is:" <<  ship.position + Vector2f(0.0*0.1,1.0*0.8) << endl;
+	//if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),true))cout << "ship collided with ceiling." << endl;
+	//if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground,bottom left corner" << endl;//check collision with ground
 }
 
 //checks distance a point is from a level

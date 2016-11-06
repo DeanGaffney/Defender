@@ -40,6 +40,9 @@ void Ship::render() const {
     			glVertex3f(1.1, 0.47, 0.0);
    				glVertex3f(1.1, 0.53, 0.0);
     			glVertex3f(0.0, 0.53, 0.0);
+    			
+    			glColor3ub(255,0,0);
+    			glVertex3f(ship.position.x,ship.position.y,0.0);
 		glEnd();
 	glPopMatrix();
 }
