@@ -23,8 +23,12 @@ void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {}
 
 void checkCollisions(){
+				//glVertex3f(0.0, 0.0, 0.0); bottom left of ship
+    			//glVertex3f(1.0, 0.4, 0.0);
+    			//glVertex3f(1.0, 0.6, 0.0);
+    			//glVertex3f(0.0, 1.0, 0.0);
 	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),true))cout << "ship collided with ceiling." << endl;
-	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground" << endl;		//check collision with ground
+	if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground,bottom left corner" << endl;//check collision with ground
 }
 
 //checks distance a point is from a level
@@ -40,10 +44,8 @@ float distancePointFromLevel(const Vector2f point, bool ceilingCheck){
 	for(k=1; k < dataLength; ++k){if(point.x > data[k-1].x && data[k].x > point.x)break;}	//get the two points the ship is between	
 	
 	//set up points the point is between
-	previousPoint.x = data[k - 1].x;
-	previousPoint.y = data[k - 1].y;	
-	currentPoint.x = data[k].x;
-	currentPoint.y = data[k].y;
+	previousPoint = data[k-1];
+	currentPoint = data[k];
 	
 	//cout << "Previous point : " << previousPoint.x << "," << previousPoint.y << endl;
 	//cout << "Current point : " << currentPoint.x << "," << currentPoint.y << endl;
@@ -57,10 +59,8 @@ float distancePointFromLevel(const Vector2f point, bool ceilingCheck){
 
 //function checks data and ground collision based on boolean variable
 bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck){
-
    float distance = distancePointFromLevel(point, ceilingCheck);
-
-   return (ceilingCheck && point.y >= distance) || (!ceilingCheck && point.y <= distance);
+   return (ceilingCheck && point.y >= distance) ? true : (!ceilingCheck && point.y <= distance) ? true : false; 
 }
 
 void update() {

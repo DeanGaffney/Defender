@@ -29,7 +29,7 @@ void Ship::render() const {
 		glScalef(0.1, 0.08, 1);
 		glColor3ub(0,200, 0);
 		glBegin(GL_QUADS);      
-   			glVertex3f(0.0, 0.0, 0.0);
+   				glVertex3f(0.0, 0.0, 0.0);
     			glVertex3f(1.0, 0.4, 0.0);
     			glVertex3f(1.0, 0.6, 0.0);
     			glVertex3f(0.0, 1.0, 0.0);
