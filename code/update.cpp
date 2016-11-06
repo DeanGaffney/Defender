@@ -12,10 +12,9 @@ void Ship::update(float dt)  {
 	//update position
 	position += dt * velocity;
 	
-	//restrict movement
+	//restrict ship movement on the x and y axis between the screen
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
-	cout << ASPECT << endl;
 }
 
 
@@ -24,18 +23,16 @@ void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {}
 
 void checkCollisions(){
-				//glVertex3f(0.0, 0.0, 0.0); bottom left of ship
-    			//glVertex3f(1.0, 0.4, 0.0);
-    			//glVertex3f(1.0, 0.6, 0.0);
-    			//glVertex3f(0.0, 1.0, 0.0);
-    			
-    			//glScalef(0.1, 0.08, 1);
-    			//ship.position is from bottom left hand corner, when ship is at end of screen y is 0
-    			//get center of ship
-    cout << "Ship Position is: "<< ship.position << endl;
-    if(checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.1,1.0*0.08),true))cout << "Ship top left is:" <<  ship.position + Vector2f(0.0*0.1,1.0*0.8) << endl;
-	//if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),true))cout << "ship collided with ceiling." << endl;
-	//if(checkPointCollisionWithLevel(Vector2f(ship.position.x,ship.position.y),false))cout << "ship collided with ground,bottom left corner" << endl;//check collision with ground
+	
+	//check all 4 corners of the ship for collision with the level
+  	if((checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.1,1.0*0.08),true)) || 
+  	  (checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.0,0.0*0.08),false)) || 
+  	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.6*0.08),true))  || 
+  	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.4*0.08),false))){
+		//do things (lose life or stuff)
+		cout << "ship collided at one of the corner points" << endl;
+	}
+ 
 }
 
 //checks distance a point is from a level
