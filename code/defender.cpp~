@@ -34,10 +34,8 @@ int main() {
 	if (level != NULL) { delete level; level = NULL; }
 	
 	//give player bullets
-	for(int bullet = 0; bullet < 1000; bullet++){
-		shipBullets.allocate(bullet);
-	}
-	
+	shipBullets.allocate();
+	shipBullets.allocate();
 //	return 0;
 	
 	while (!done) {
