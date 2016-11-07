@@ -32,7 +32,10 @@ int main() {
 	cout << *level;
 	cout << *level;
 	if (level != NULL) { delete level; level = NULL; }
-
+	
+	//give player bullets
+	shipBullets.allocate();
+	
 //	return 0;
 	
 	while (!done) {

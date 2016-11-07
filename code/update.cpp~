@@ -18,9 +18,13 @@ void Ship::update(float dt)  {
 }
 
 
-void Bullet::update(float dt)  {}
+void Bullet::update(float dt)  {
+	position += dt * velocity;
+}
 void Bomb::update(float dt)  {}
-void Enemy::update(float dt)  {}
+void Enemy::update(float dt)  {
+	//cout << "enemies are being updated" << endl;
+}
 
 void checkCollisions(){
 	
@@ -67,8 +71,24 @@ bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck){
    return (ceilingCheck && point.y >= distance) ? true : (!ceilingCheck && point.y <= distance) ? true : false; 
 }
 
+void cullObjects(){
+	//cull ship bullets
+	for(int shipBullet = 0; shipBullet < shipBullets.size(); shipBullet++){
+		if(shipBullets[shipBullet].state == Entity::DEAD){			//if dead (hit enemy or out of screen then set to dead)
+			shipBullets.free(shipBullet);
+		}
+	}
+}
+
 void update() {
 	level->update(dt);
 	ship.update(dt);
+	for(int enemy = 0; enemy < level->enemyLength;enemy++){
+		//if((int)level->enemies[enemy].position.x == (int)ship.position.x)cout << "ship and enemy are on the same x axis. Enemy number:" << enemy << endl;
+		//cout << enemy << endl;
+	}
+	cout << "Is ship bullet pool empty?" << shipBullets.isEmpty() << endl;
+	for(int bullet = 0; bullet < shipBullets.size(); bullet++)cout << shipBullets[bullet].position << "Bullet pool for ship is empty?:" << shipBullets.isEmpty() << endl;
 	checkCollisions();
+	// cullObjects();
 }

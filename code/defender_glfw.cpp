@@ -4,7 +4,6 @@
 #include "Level.h"
 
 void Level::render() const {
-
 	//draw ceiling
 	glColor3ub(0, 10, 100);
 	glBegin(GL_QUAD_STRIP);
@@ -40,15 +39,51 @@ void Ship::render() const {
     			glVertex3f(1.1, 0.47, 0.0);
    				glVertex3f(1.1, 0.53, 0.0);
     			glVertex3f(0.0, 0.53, 0.0);
-    			
-    			glColor3ub(255,0,0);
-    			glVertex3f(ship.position.x,ship.position.y,0.0);
 		glEnd();
 	glPopMatrix();
 }
-void Bullet::render() const {}
+void Bullet::render() const {
+	glPushMatrix();
+		glTranslatef(position.x, position.y, 0.0f);
+		glScalef(0.1, 0.08, 1);
+		glColor3ub(200,0, 0);			//draws enemy red
+		glBegin(GL_QUADS);      
+   			glVertex3f(0.0, 0.0, 0.0);
+    		glVertex3f(1.0, 0.4, 0.0);
+    		glVertex3f(1.0, 0.6, 0.0);
+    		glVertex3f(0.0, 1.0, 0.0);
+
+			glColor3ub(0, 0, 200);  
+
+    		glVertex3f(0.0, 0.47, 0.0);
+    		glVertex3f(1.1, 0.47, 0.0);
+   			glVertex3f(1.1, 0.53, 0.0);
+    		glVertex3f(0.0, 0.53, 0.0);
+			glEnd();
+	glPopMatrix();
+}
 void Bomb::render() const {}
-void Enemy::render() const {}
+void Enemy::render() const {
+	//draw enemy
+	glPushMatrix();
+		glTranslatef(position.x, position.y, 0.0f);
+		glScalef(0.1, 0.08, 1);
+		glColor3ub(200,0, 0);			//draws enemy red
+		glBegin(GL_QUADS);      
+   			glVertex3f(0.0, 0.0, 0.0);
+    		glVertex3f(1.0, 0.4, 0.0);
+    		glVertex3f(1.0, 0.6, 0.0);
+    		glVertex3f(0.0, 1.0, 0.0);
+
+			glColor3ub(0, 0, 200);  
+
+    		glVertex3f(0.0, 0.47, 0.0);
+    		glVertex3f(1.1, 0.47, 0.0);
+   			glVertex3f(1.1, 0.53, 0.0);
+    		glVertex3f(0.0, 0.53, 0.0);
+			glEnd();
+	glPopMatrix();
+}
 
 int initGraphics() {
 	
@@ -95,7 +130,9 @@ void render() {
     	glTranslatef(-level->position.x, 0, 0);	//move game objects relative to level movement
     	level->render();
     	ship.render();
+    	for(int enemy = 0; enemy < level->enemyLength;enemy++)level->enemies[enemy].render();
 	glPopMatrix();
+	
     glfwSwapBuffers(); 
 }
 void getInput() {
@@ -116,6 +153,15 @@ void getInput() {
     	ship.velocity.x = level->velocity.x-0.5;
 	} else if (glfwGetKey(GLFW_KEY_RIGHT)) {
     	ship.velocity.x = level->velocity.x + 0.5;
+	}
+	
+	//fire bullets from ship
+	if(glfwGetKey(GLFW_KEY_SPACE)){
+		for(int bullet = 0;bullet < shipBullets.size(); bullet++){
+			if(shipBullets[bullet].state == Entity::AWAKE){
+				shipBullets[bullet].position = ship.position;
+				}
+		}
 	}
 }
 #endif
