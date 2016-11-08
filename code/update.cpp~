@@ -27,15 +27,17 @@ void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {
 	position += dt* velocity;
 	if(type == Enemy::SIMPLE){
-	velocity.x = -0.3;
+	velocity.x = -0.2;
 		//velocity.y = 0;
 		//moves up and down and detects when about to collide with level
-  		if((checkPointCollisionWithLevel(position + Vector2f(0.02,0.06),true))){
-  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0;
-  		}  
-  	  else if((checkPointCollisionWithLevel(position + Vector2f(0.02,-0.06),false))){
-  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0;
-  	  }
+  		if((checkPointCollisionWithLevel(position + Vector2f(0.06,0.06),true))){		//check collision in front and above for ceiling
+  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
+  		}
+  	  	else if((checkPointCollisionWithLevel(position + Vector2f(0.03,-0.06),false))){ //check collision in front and below for ground
+  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0; //if space under position move down,else dont
+  	  	}else{
+		 velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
+	  	}
 	}else{
 		
 	}
