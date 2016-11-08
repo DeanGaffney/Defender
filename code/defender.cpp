@@ -64,7 +64,6 @@ int main() {
 			case(LEVEL_START): {
 				if (level != NULL) {  delete level; level = NULL; }
 				level = new Level("test");
-				level->velocity.x = 0.1;
 				cout << *level;
 				printf ("Game state changed from LEVEL_START to LEVEL_PLAY\n");
 				gameState = LEVEL_PLAY;

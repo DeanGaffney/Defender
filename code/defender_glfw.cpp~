@@ -62,7 +62,7 @@ void Enemy::render() const {
 	//draw enemy
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
-		glScalef(0.1, 0.08, 1);
+		glScalef(-0.1, 0.08, 1);
 		glColor3ub(200,0, 0);			//draws enemy red
 		glBegin(GL_QUADS);      
    			glVertex3f(0.0, 0.0, 0.0);
@@ -153,10 +153,8 @@ void getInput() {
 	
 	//fire bullets from ship
 	if(glfwGetKey(GLFW_KEY_SPACE)){
-		shipBullets.allocate();
-		for(int bullet = 0;bullet < shipBullets.size(); bullet++){		//this will keep resetting position to the ships position, need to fix this
-			shipBullets[bullet].position = ship.position; 
-		}
+		Bullet bullet = shipBullets.allocate();
+		bullet.position = ship.position;
 	}
 }
 #endif

@@ -25,7 +25,20 @@ void Bullet::update(float dt)  {
 
 void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {
-	//cout << "enemies are being updated" << endl;
+	position += dt* velocity;
+	if(type == Enemy::SIMPLE){
+	velocity.x = -0.3;
+		//velocity.y = 0;
+		//moves up and down and detects when about to collide with level
+  		if((checkPointCollisionWithLevel(position + Vector2f(0.02,0.06),true))){
+  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0;
+  		}  
+  	  else if((checkPointCollisionWithLevel(position + Vector2f(0.02,-0.06),false))){
+  	  	 velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0;
+  	  }
+	}else{
+		
+	}
 }
 
 //make sure game object is within width of screen
@@ -99,13 +112,10 @@ void cullObjects(){
 void update() {
 	level->update(dt);
 	ship.update(dt);
-	for(int enemy = 0; enemy < level->enemyLength;enemy++){
-		//if((int)level->enemies[enemy].position.x == (int)ship.position.x)cout << "ship and enemy are on the same x axis. Enemy number:" << enemy << endl;
-		//cout << enemy << endl;
-	}
+	for(int enemy = 0; enemy < level->enemyLength;enemy++)level->enemies[enemy].update(dt);
 	//cout << "Is ship bullet pool empty?" << shipBullets.isEmpty() << endl;
 	for(int bullet = 0; bullet < shipBullets.size(); bullet++)shipBullets[bullet].update(dt);
 	checkCollisions();
-	cout << "Bullet pool size " << shipBullets.size() << endl;
-	cullObjects();
+	//cout << "Bullet pool size " << shipBullets.size() << endl;
+	//cullObjects();
 }
