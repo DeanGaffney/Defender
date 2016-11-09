@@ -192,6 +192,8 @@ void getInput();
 void checkCollisions();
 bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck);
 float distancePointFromLevel(const Vector2f point, bool ceilingCheck);
+bool isPointInsideRectangle(Vector2f point);
+bool isPointInsideCircle(Vector2f point);
 void cullObjects();
 bool isInScreen(Entity &gameObject);
 #endif

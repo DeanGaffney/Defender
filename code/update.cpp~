@@ -29,7 +29,7 @@ void Enemy::update(float dt)  {
 	if(type == Enemy::SIMPLE){
 		if(checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)){
 			velocity.y = -0.1;
-		}else if(checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)){
+		}else if(checkPointCollisionWithLevel(position + Vector2f(0.0,-0.1),false)){
 			velocity.y = 0.1;
 		}else{
 			velocity.y = 0.1;
@@ -67,9 +67,44 @@ void checkCollisions(){
 		//do things (lose life or stuff)
 		cout << "ship collided at one of the corner points" << endl;
 	}
+	
+	//check bullet player/enemy collisions
+	
+	//check player collision with enemies
+	
+	//check player collision with bombs
  
 }
 
+//checks if gameObjects point is inside rectangle, I would consider making a rectangle class, or an array of vectors to pass into this as an argument
+bool isPointInsideRectangle(Vector2f point){
+//r is rectangle
+//m is point thats being tested
+// a starts at top left and goes clock wise and ends bottom left with d coordiante.
+    Vector2f AB = Vector2f(r.A, r.B);
+    Vector2f AM = Vector2f(r.A, point);
+    Vector2f BC = Vector2f(r.B, r.C);
+    Vector2f BM = Vector2f(r.B, point);
+    Vector2f dotABAM = Vector2f(AB, AM);
+    Vector2f dotABAB = Vector2f(AB, AB);
+    Vector2f dotBCBM = Vector2f(BC, BM);
+    Vector2f dotBCBC = Vector2f(BC, BC);
+    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
+}
+
+//checks if gameObjects point is inside circle (used for bombs and bullets)
+//http://www.learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-Detection
+//I need rectangles here again so consider using rectangl object or array of vectors to represent rectangles
+//bombs may need a radius in order to make a circle ask Kieran about what approach to take
+bool isPointInsideCircle(Vector2f point){
+	//get center point of circle
+	//calculate half-extents and and center of rectangle being tested against Vector2f
+	//get the difference between the circle center and the rectangle center Vector2
+	//clamp the difference between the -half extents and positive half extent
+	//closest point on rectangle to circle is then clamped vector + rectangle center
+	//difference = closest - circle center
+	//return difference length <= radius (if true collisin,false means no collision)
+}
 
 //checks distance a point is from a level
 float distancePointFromLevel(const Vector2f point, bool ceilingCheck){
