@@ -27,13 +27,34 @@ void Bomb::update(float dt)  {}
 void Enemy::update(float dt)  {
 	position += dt* velocity;
 	if(type == Enemy::SIMPLE){
-		if(checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)){
-			velocity.y = -0.1;
-		}else if(checkPointCollisionWithLevel(position + Vector2f(0.0,-0.1),false)){
-			velocity.y = 0.1;
-		}else{
-			velocity.y = 0.1;
-		}
+		//For Tracking enemies
+		velocity.x = -0.2;
+		//velocity.y = 0;
+		//moves up and down and detects when about to collide with level
+  		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
+  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
+  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false))velocity.y = -0.3;
+  		}
+  	  	else if((checkPointCollisionWithLevel(position + Vector2f(0.2,-0.1),false))){ //check collision in front and below for ground
+  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0; //if space under position move down,else dont
+  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true))velocity.y = 0.3;
+  	  	}else{
+		 	velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
+	  	}
+	  	
+	  	/*
+	  		if(randomFLoat < chance){
+	  			float theta = randFloat (0,2*M_PI);
+	  			float r = randFloat (0.5,1);
+	  			velocity.set = (r cos(theta),r sin(theta));
+	  		}
+	  		
+	  		//update position
+	  		
+	  		//clamp position y between max and min points in level
+	  	
+	  	
+	  	*/
 	}else{
 	//For Tracking enemies
 		velocity.x = -0.2;
@@ -77,11 +98,12 @@ void checkCollisions(){
 }
 
 //checks if gameObjects point is inside rectangle, I would consider making a rectangle class, or an array of vectors to pass into this as an argument
+//could also pass in 2 vector lengths height and width representing rectangle??
 bool isPointInsideRectangle(Vector2f point){ //ideally pass in gameObject.hitBox here 
 //r is rectangle
 //m is point thats being tested
 // a starts at top left and goes clock wise and ends bottom left with d coordiante.
-    Vector2f AB = Vector2f(r.A, r.B);
+    /*Vector2f AB = Vector2f(r.A, r.B);
     Vector2f AM = Vector2f(r.A, point);
     Vector2f BC = Vector2f(r.B, r.C);
     Vector2f BM = Vector2f(r.B, point);
@@ -89,7 +111,7 @@ bool isPointInsideRectangle(Vector2f point){ //ideally pass in gameObject.hitBox
     Vector2f dotABAB = Vector2f(AB, AB);
     Vector2f dotBCBM = Vector2f(BC, BM);
     Vector2f dotBCBC = Vector2f(BC, BC);
-    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
+    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;*/
 }
 
 //checks if gameObjects point is inside circle (used for bombs and bullets)
@@ -104,6 +126,11 @@ bool isPointInsideCircle(Vector2f point){	//ideally pass in gameObject.hitBox he
 	//closest point on rectangle to circle is then clamped vector + rectangle center
 	//difference = closest - circle center
 	//return difference length <= radius (if true collisin,false means no collision)
+	
+	//kierans explanation
+	//checkRectangleCircleCollsision(Vector2f p , Vector2f c , float r){
+	//	return(p-c).lengthSqr() <= r*r;
+	//}
 }
 
 //checks distance a point is from a level

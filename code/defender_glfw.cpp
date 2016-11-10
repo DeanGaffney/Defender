@@ -153,7 +153,7 @@ void getInput() {
 	
 	//fire bullets from ship
 	if(glfwGetKey(GLFW_KEY_SPACE)){
-		Bullet bullet = shipBullets.allocate();
+		Bullet & bullet = shipBullets.allocate();
 		bullet.position = ship.position;
 	}
 }

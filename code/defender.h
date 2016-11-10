@@ -74,6 +74,10 @@ public:
 		outputStream <<entity.toString();
 		return outputStream;
 	}		
+	
+	//make vectors for bounding box
+	
+	//
 };
 
 
