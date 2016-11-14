@@ -48,16 +48,17 @@ void Bullet::render() const {
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.03, 0.03, 1);
 		glColor3ub(255,255,0);			//draws enemy red
-		glBegin(GL_QUADS);      
+		glBegin(GL_LINES);      
    			glVertex3f(0.0, 0.0, 0.0);
-    		glVertex3f(1.0, 0.7, 0.0);
-    		glVertex3f(1.0, 0.7, 0.0);
-    		glVertex3f(0.0, 0.7, 0.0);
+    		glVertex3f(1.0, 0.0, 0.0);
 			glEnd();
 		glPopMatrix();
 	}
 }
-void Bomb::render() const {}
+void Bomb::render() const {
+	
+
+}
 void Enemy::render() const {
 	//draw enemy
 	glPushMatrix();
@@ -84,7 +85,8 @@ void renderRadar(){
 	glPushMatrix();
 		glTranslatef(RADAR_X,RADAR_Y,0.0f);
 		glScalef(RADAR_WIDTH,RADAR_HEIGHT,1);
-		glColor3ub(139,0,139);
+		glColor3ub(0,0,0);
+		//radar box
 			glBegin(GL_QUADS);
 				glVertex3f(0.0,0.0,0.0);
 				glVertex3f(1.0,0.0,0.0);
@@ -92,7 +94,7 @@ void renderRadar(){
 				glVertex3f(0.0,1.0,0.0);
 			glEnd();
 			glColor3ub(0,255,0);
-			
+		//radar guide lines for scaling
 			glBegin(GL_LINES);
 				glVertex3f(0.0,0.0,0.0);
 				glVertex3f(1.0,1.0,0.0);
@@ -100,7 +102,10 @@ void renderRadar(){
 				glVertex3f(1.0,0.0,0.0);
 				glVertex3f(0.0,1.0,0.0);
 			glEnd();
-			
+		
+		//scale level and draw it in radar
+		glScalef(0.05,1,1);
+			level->render();
 	glPopMatrix();
 }
 
@@ -176,9 +181,12 @@ void getInput() {
 	}
 	
 	//fire bullets from ship
-	if(glfwGetKey(GLFW_KEY_SPACE)){
+	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
-		bullet.position = ship.position;
+		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
+		previousBulletTime = 0.1;
+	}else{
+		previousBulletTime -= dt;
 	}
 }
 #endif
