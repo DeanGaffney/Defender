@@ -47,6 +47,10 @@
 	const int WINDOW_WIDTH = (int)(480*SCALE);
 	const int WINDOW_HEIGHT = (int)(272*SCALE);
 	const float ASPECT = float(WINDOW_WIDTH)/float(WINDOW_HEIGHT);
+	const float RADAR_HEIGHT = 0.1;
+	const float RADAR_WIDTH = ASPECT * 0.8;		//80% of screen
+	const float RADAR_X = (ASPECT - RADAR_WIDTH) / 2;
+	const float RADAR_Y = 1.0 - RADAR_HEIGHT;
 #endif
 
 // state for main game loop
@@ -74,6 +78,10 @@ public:
 		outputStream <<entity.toString();
 		return outputStream;
 	}		
+	
+	//make vectors for bounding box
+	
+	//
 };
 
 
@@ -106,12 +114,16 @@ public:
 	enum Type {SIMPLE, TRACKING};
 
 	Type type;
+	Vector2f center;
+	float radius;
 	
 	Enemy () {
 		type = SIMPLE;
 		state = ASLEEP;
 		position = Vector2f::ZERO;
 		velocity = Vector2f::ZERO;
+		center = Vector2f::ZERO;
+		radius = 1;
 	} 
 	
 	void render () const;
@@ -186,6 +198,7 @@ extern bool fire, fireBomb;
 // ===============================================
 int initGraphics();
 int deinitGraphics();
+void renderRadar();
 void render();
 void update();
 void getInput();
@@ -193,7 +206,7 @@ void checkCollisions();
 bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck);
 float distancePointFromLevel(const Vector2f point, bool ceilingCheck);
 bool isPointInsideRectangle(Vector2f point);
-bool isPointInsideCircle(Vector2f point);
+bool isPointInsideCircle(Vector2f point,Vector2f center, float radius);
 void cullObjects();
 bool isInScreen(Entity &gameObject);
 #endif

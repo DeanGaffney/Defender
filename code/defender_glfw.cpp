@@ -80,6 +80,30 @@ void Enemy::render() const {
 	glPopMatrix();
 }
 
+void renderRadar(){
+	glPushMatrix();
+		glTranslatef(RADAR_X,RADAR_Y,0.0f);
+		glScalef(RADAR_WIDTH,RADAR_HEIGHT,1);
+		glColor3ub(139,0,139);
+			glBegin(GL_QUADS);
+				glVertex3f(0.0,0.0,0.0);
+				glVertex3f(1.0,0.0,0.0);
+				glVertex3f(1.0,1.0,0.0);
+				glVertex3f(0.0,1.0,0.0);
+			glEnd();
+			glColor3ub(0,255,0);
+			
+			glBegin(GL_LINES);
+				glVertex3f(0.0,0.0,0.0);
+				glVertex3f(1.0,1.0,0.0);
+				
+				glVertex3f(1.0,0.0,0.0);
+				glVertex3f(0.0,1.0,0.0);
+			glEnd();
+			
+	glPopMatrix();
+}
+
 int initGraphics() {
 	
 	glfwInit(); 
@@ -128,7 +152,7 @@ void render() {
     	for(int enemy = 0;enemy < level->enemyLength;++enemy)level->enemies[enemy].render();
     	for(int bullet = 0;bullet < shipBullets.size();++bullet)shipBullets[bullet].render();
 	glPopMatrix();
-	
+	renderRadar();
     glfwSwapBuffers(); 
 }
 void getInput() {

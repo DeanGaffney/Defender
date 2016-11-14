@@ -28,9 +28,19 @@ void Enemy::update(float dt)  {
 	position += dt* velocity;
 	if(type == Enemy::SIMPLE){
 		//For Tracking enemies
-		velocity.x = -0.2;
+		/*velocity.x = -0.2;
+		// enemy is going to be a circle so calculate center + radius and this will be a point on the edge of circle
+		// from there get 2 points center.y+radius (top) and center.y - radius(bottom)
+		// check distance point from level on both points then compare them, depedning on which one is less the velocity needs to updated in the y axis.
+		 Vector2f topPoint = Vector2f(center.x,center.y + radius);
+		 Vector2f bottomPoint = Vector2f(center.x,center.y - radius);
+		 
+		 float distanceFromCeiling = distanceFromPointLevel(topPoint,true);
+		 float distanceFromGround = distanceFromPointLevel(bottomPoint,false);
+		 velocity.y = (distanceFromCeiling < distanceFromGround) ? -0.2 : 0.2;*/
 		//velocity.y = 0;
 		//moves up and down and detects when about to collide with level
+		velocity.x = -0.2;
   		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
   	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
   	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false))velocity.y = -0.3;
@@ -114,23 +124,17 @@ bool isPointInsideRectangle(Vector2f point){ //ideally pass in gameObject.hitBox
     return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;*/
 }
 
-//checks if gameObjects point is inside circle (used for bombs and bullets)
+
 //http://www.learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-Detection
-//I need rectangles here again so consider using rectangl object or array of vectors to represent rectangles
-//bombs may need a radius in order to make a circle ask Kieran about what approach to take
-bool isPointInsideCircle(Vector2f point){	//ideally pass in gameObject.hitBox here 
+bool isPointInsideCircle(Vector2f point,Vector2f center, float radius){	//ideally pass in gameObject.hitBox here 
 	//get center point of circle
 	//calculate half-extents and and center of rectangle being tested against Vector2f
 	//get the difference between the circle center and the rectangle center Vector2
 	//clamp the difference between the -half extents and positive half extent
 	//closest point on rectangle to circle is then clamped vector + rectangle center
 	//difference = closest - circle center
-	//return difference length <= radius (if true collisin,false means no collision)
-	
-	//kierans explanation
-	//checkRectangleCircleCollsision(Vector2f p , Vector2f c , float r){
-	//	return(p-c).lengthSqr() <= r*r;
-	//}
+	//return difference length <= radius (if true collision,false means no collision)
+	return(point-center).lengthSqr() <= radius*radius;
 }
 
 //checks distance a point is from a level
