@@ -100,12 +100,21 @@ void checkCollisions(){
 	}
 	
 	//check bullet player/enemy collisions
-	
+	for(int bullet = 0; bullet < shipBullets.size();bullet++){
+		//if bullet collides with enemy 
+		if(shipBullets[bullet])
+	}
 	//check player collision with enemies
 	
 	//check player collision with bombs
  
 }
+
+bool isBulletCollidingWithEnemy(Vector2f point, Vector2f [] enemyRectangle){
+	
+}
+
+
 
 //checks if gameObjects point is inside rectangle, I would consider making a rectangle class, or an array of vectors to pass into this as an argument
 //could also pass in 2 vector lengths height and width representing rectangle??

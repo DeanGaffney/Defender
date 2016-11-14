@@ -67,6 +67,8 @@ public:
 	State state;
 	Vector2f position;
 	Vector2f velocity;
+	Vector2f width;
+	Vector2f height;
 	
 	virtual void render () const = 0;
 
@@ -209,4 +211,5 @@ bool isPointInsideRectangle(Vector2f point);
 bool isPointInsideCircle(Vector2f point,Vector2f center, float radius);
 void cullObjects();
 bool isInScreen(Entity &gameObject);
+bool isBulletCollidingWithEnemy(Vector2f point, Vector2f [] enemyRectangle);
 #endif
