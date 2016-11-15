@@ -20,6 +20,7 @@ bool fire, fireBomb;
 BulletPool shipBullets(1000);
 BulletPool enemyBullets(1000);
 BombPool shipBombs(1000);
+float gravity = -9.8;
 
 int main() {
 	
@@ -32,11 +33,6 @@ int main() {
 	cout << *level;
 	cout << *level;
 	if (level != NULL) { delete level; level = NULL; }
-	
-	//give player bullets
-	
-	//shipBullets.allocate();
-//	return 0;
 	
 	while (!done) {
 		

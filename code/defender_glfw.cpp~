@@ -39,11 +39,27 @@ void Ship::render() const {
     			glVertex3f(1.1, 0.47, 0.0);
    				glVertex3f(1.1, 0.53, 0.0);
     			glVertex3f(0.0, 0.53, 0.0);
+    			
+    			
 		glEnd();
+		
+		glColor3ub(139,0,139);
+				glBegin(GL_LINES);
+				glVertex3f(0.1,0.1,0.0);
+				glVertex3f(0.1,0.9,0.0);
+				
+				glVertex3f(0.1,0.1,0.0);
+				glVertex3f(0.9,0.1,0.0);
+				
+				glVertex3f(0.9,0.1,0.0);
+				glVertex3f(0.9,0.9,0.0);
+				
+				glVertex3f(0.9,0.9,0.0);
+				glVertex3f(0.1,0.9,0.0);
+			glEnd();
 	glPopMatrix();
 }
 void Bullet::render() const {
-	for(int bullet = 0; bullet < shipBullets.size();bullet++){
 		glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.03, 0.03, 1);
@@ -53,12 +69,22 @@ void Bullet::render() const {
     		glVertex3f(1.0, 0.0, 0.0);
 			glEnd();
 		glPopMatrix();
-	}
 }
 void Bomb::render() const {
-	
-
+	glPushMatrix();
+		glTranslatef(position.x, position.y, 0.0f);
+		glScalef(0.03, 0.03, 1);
+		glColor3ub(255,255,0);			//draws enemy red
+		glBegin(GL_QUADS);      
+   			glVertex3f(0.0, 0.0, 0.0);
+    		glVertex3f(1.0, 0.0, 0.0);
+    		glVertex3f(1.0, 1.0, 0.0);
+    		glVertex3f(0  .0, 1.0, 0.0);
+			glEnd();
+		glPopMatrix();
 }
+
+
 void Enemy::render() const {
 	//draw enemy
 	glPushMatrix();
@@ -77,6 +103,21 @@ void Enemy::render() const {
     		glVertex3f(1.1, 0.47, 0.0);
    			glVertex3f(1.1, 0.53, 0.0);
     		glVertex3f(0.0, 0.53, 0.0);
+			glEnd();
+			
+			glColor3ub(139,0,139);
+				glBegin(GL_LINES);
+				glVertex3f(0.1,0.1,0.0);
+				glVertex3f(0.1,0.9,0.0);
+				
+				glVertex3f(0.1,0.1,0.0);
+				glVertex3f(0.9,0.1,0.0);
+				
+				glVertex3f(0.9,0.1,0.0);
+				glVertex3f(0.9,0.9,0.0);
+				
+				glVertex3f(0.9,0.9,0.0);
+				glVertex3f(0.1,0.9,0.0);
 			glEnd();
 	glPopMatrix();
 }
@@ -154,8 +195,9 @@ void render() {
     	glTranslatef(-level->position.x, 0, 0);	//move game objects relative to level movement
     	level->render();
     	ship.render();
-    	for(int enemy = 0;enemy < level->enemyLength;++enemy)level->enemies[enemy].render();
+    	for(int enemy = 0;enemy < level->enemyLength;++enemy)if(level->enemies[enemy].state != Entity::DEAD)level->enemies[enemy].render();
     	for(int bullet = 0;bullet < shipBullets.size();++bullet)shipBullets[bullet].render();
+    	for(int bomb = 0; bomb < shipBombs.size();++bomb)shipBombs[bomb].render();
 	glPopMatrix();
 	renderRadar();
     glfwSwapBuffers(); 
@@ -181,12 +223,21 @@ void getInput() {
 	}
 	
 	//fire bullets from ship
-	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
+	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
-		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));
+		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
+	}*/
+	
+	//fire bombs from ship
+	if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
+		Bomb & bomb = shipBombs.allocate();
+		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
+		previousBombTime = 1;
+	}else{
+		previousBombTime -= dt;
 	}
 }
 #endif

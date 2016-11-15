@@ -15,6 +15,11 @@ void Ship::update(float dt)  {
 	//restrict ship movement on the x and y axis between the screen
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
+	
+	//automate movement
+	float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
+	float bottomDistance = distancePointFromLevel(position, false);
+	velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;
 }
 
 
@@ -23,24 +28,18 @@ void Bullet::update(float dt)  {
 	position += dt * velocity;
 }
 
-void Bomb::update(float dt)  {}
+void Bomb::update(float dt)  {
+//motion for shooting bombs from enemies
+   	velocity += Vector2f(0,-9.8*dt);
+    position += velocity*dt;
+}
 void Enemy::update(float dt)  {
 	position += dt* velocity;
 	if(type == Enemy::SIMPLE){
 		//For Tracking enemies
-		/*velocity.x = -0.2;
-		// enemy is going to be a circle so calculate center + radius and this will be a point on the edge of circle
-		// from there get 2 points center.y+radius (top) and center.y - radius(bottom)
-		// check distance point from level on both points then compare them, depedning on which one is less the velocity needs to updated in the y axis.
-		 Vector2f topPoint = Vector2f(center.x,center.y + radius);
-		 Vector2f bottomPoint = Vector2f(center.x,center.y - radius);
-		 
-		 float distanceFromCeiling = distanceFromPointLevel(topPoint,true);
-		 float distanceFromGround = distanceFromPointLevel(bottomPoint,false);
-		 velocity.y = (distanceFromCeiling < distanceFromGround) ? -0.2 : 0.2;*/
-		//velocity.y = 0;
-		//moves up and down and detects when about to collide with level
 		velocity.x = -0.2;
+
+		//moves up and down and detects when about to collide with level
   		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
   	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
   	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false))velocity.y = -0.3;
@@ -65,9 +64,19 @@ void Enemy::update(float dt)  {
 	  	
 	  	
 	  	*/
+	  	
+	  	/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
+		float bottomDistance = distancePointFromLevel(position,false);
+		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
+		
+		
+		
+    
+    
+
 	}else{
 	//For Tracking enemies
-		velocity.x = -0.2;
+		/*velocity.x = -0.2;
 		//velocity.y = 0;
 		//moves up and down and detects when about to collide with level
   		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
@@ -80,8 +89,19 @@ void Enemy::update(float dt)  {
   	  	}else{
 		 	velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
 	  	}
+	  	*/
+	  	//get height of rectangle
+		//get distance from ceiling
+		//get bottom point of rectangle and get distance
+		//compare distances
+		// move accordingly
+		/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
+		float bottomDistance = distancePointFromLevel(position,false);
+		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
 	}
 }
+	
+	
 
 //make sure game object is within width of screen
 bool isInScreen(Entity &gameObject){
@@ -99,13 +119,28 @@ void checkCollisions(){
 		cout << "ship collided at one of the corner points" << endl;
 	}
 	
-	//check bullet player/enemy collisions
-	
-	//check player collision with enemies
+	//check bullet collision with enemy, checks bullet impact point with the left hand side of enemy rectangle
+	for(int bullet = 0; bullet < shipBullets.size();bullet++){
+		for(int enemy = 0; enemy < level->enemyLength;enemy++){
+			if(isBulletCollidingWithEnemy(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0 * 0.03), level->enemies[enemy].position) && 
+			level->enemies[enemy].state != Entity::DEAD){
+				//cout << "Bullet hit enemy" << endl;
+				shipBullets[bullet].state = Entity::DEAD;
+				level->enemies[enemy].state = Entity::DEAD;
+			}
+		}
+	}
 	
 	//check player collision with bombs
- 
 }
+
+bool isBulletCollidingWithEnemy(Vector2f bulletImpactPoint,Vector2f enemyPosition){
+	//see if the impact point is ahead of the bottom point  but within the height of the rectangle
+	return ((bulletImpactPoint.x >= enemyPosition.x) && 
+	(bulletImpactPoint.y >= enemyPosition.y && bulletImpactPoint.y <= enemyPosition.y + 1.0*0.08)) ? true : false;
+}
+
+
 
 //checks if gameObjects point is inside rectangle, I would consider making a rectangle class, or an array of vectors to pass into this as an argument
 //could also pass in 2 vector lengths height and width representing rectangle??
@@ -192,7 +227,8 @@ void update() {
 	for(int enemy = 0; enemy < level->enemyLength;enemy++)level->enemies[enemy].update(dt);
 	//cout << "Is ship bullet pool empty?" << shipBullets.isEmpty() << endl;
 	for(int bullet = 0; bullet < shipBullets.size(); bullet++)shipBullets[bullet].update(dt);
+	for(int bomb = 0; bomb < shipBombs.size(); bomb++)shipBombs[bomb].update(dt);
 	checkCollisions();
 	//cout << "Bullet pool size " << shipBullets.size() << endl;
-	//cullObjects();
+	cullObjects();
 }
