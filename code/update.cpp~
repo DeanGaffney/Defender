@@ -37,6 +37,11 @@ void Bomb::update(float dt)  {
 
 void Enemy::update(float dt)  {
 	position += dt* velocity;
+	
+	//update bounding box position
+	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
+	minPoints = Vector2f(position.x,position.y);
+	
 	if(type == Enemy::SIMPLE){
 		//For Tracking enemies
 		velocity.x = -0.2;
@@ -125,10 +130,9 @@ void checkCollisions(){
 	for(int enemy = 0; enemy < level->enemyLength; enemy++){
 		//make rectangle from current enemy position, think about how you could optimize this by maybe adding it into the bullet collision
 		//because your recalculating these 2 variables again and you might not need to.
-		Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
-		Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
 		
-		if(isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
+		
+		if(isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint)){
@@ -141,10 +145,11 @@ void checkCollisions(){
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
 		for(int enemy = 0; enemy < level->enemyLength;enemy++){
 			//send in impact point of bullet and enemy rectangle
-			Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
-			Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
+			//Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
+			//Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
 			
-			if(isPointInsideRectangle(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0), maxPoint, minPoint) && level->enemies[enemy].state != Entity::DEAD){
+			if(isPointInsideRectangle(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0), level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) && 
+			level->enemies[enemy].state != Entity::DEAD){
 				cout << "Bullet hit enemy" << endl;
 				shipBullets[bullet].state = Entity::DEAD;
 				level->enemies[enemy].state = Entity::DEAD;

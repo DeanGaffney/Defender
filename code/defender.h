@@ -67,6 +67,8 @@ public:
 	State state;
 	Vector2f position;
 	Vector2f velocity;
+	Vector2f maxPoints;		//maxPoints holds the max X and Y for the rectangle hit box of entities.
+	Vector2f minPoints;		//minPoints holds the min X and Y for the rectangle hit box of entities.
 	
 	virtual void render () const = 0;
 
