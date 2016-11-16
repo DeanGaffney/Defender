@@ -112,7 +112,7 @@ bool isInScreen(Entity &gameObject){
 
 void checkCollisions(){
 	
-	//check all 4 corners of the ship for collision with the level
+	//check all 4 corners of the player ship for collision with the level
   	if((checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.1,1.0*0.08),true)) || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.0,0.0*0.08),false)) || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.6*0.08),true))  || 
@@ -121,11 +121,26 @@ void checkCollisions(){
 		cout << "ship collided at one of the corner points" << endl;
 	}
 	
+	//check player collision with enemies
+	for(int enemy = 0; enemy < level->enemyLength; enemy++){
+		//make rectangle from current enemy position, think about how you could optimize this by maybe adding it into the bullet collision
+		//because your recalculating these 2 variables again and you might not need to.
+		Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
+		Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
+		
+		if(isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
+			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
+			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint) ||
+			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),maxPoint,minPoint)){
+				cout << "Player hit enemy" << endl;
+				//do something kill player or lose life
+			}
+	}
+	
 	//check bullet collision with enemy, checks bullet impact point with the left hand side of enemy rectangle
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
 		for(int enemy = 0; enemy < level->enemyLength;enemy++){
 			//send in impact point of bullet and enemy rectangle
-			//-0.1, 0.08, 1 *SCALING*
 			Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
 			Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
 			
@@ -136,6 +151,8 @@ void checkCollisions(){
 			}
 		}
 	}
+	
+	
 	
 	//check player collision with bombs
 }
