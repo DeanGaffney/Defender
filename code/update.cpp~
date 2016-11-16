@@ -30,9 +30,11 @@ void Bullet::update(float dt)  {
 
 void Bomb::update(float dt)  {
 //motion for shooting bombs from enemies
-   	velocity += Vector2f(0,-9.8*dt);
-    position += velocity*dt;
+   	//velocity += Vector2f(0,-9.8*dt);
+   // position += velocity*dt;
 }
+
+
 void Enemy::update(float dt)  {
 	position += dt* velocity;
 	if(type == Enemy::SIMPLE){
@@ -122,9 +124,13 @@ void checkCollisions(){
 	//check bullet collision with enemy, checks bullet impact point with the left hand side of enemy rectangle
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
 		for(int enemy = 0; enemy < level->enemyLength;enemy++){
-			if(isBulletCollidingWithEnemy(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0 * 0.03), level->enemies[enemy].position) && 
-			level->enemies[enemy].state != Entity::DEAD){
-				//cout << "Bullet hit enemy" << endl;
+			//send in impact point of bullet and enemy rectangle
+			//-0.1, 0.08, 1 *SCALING*
+			Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
+			Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
+			
+			if(isPointInsideRectangle(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0), maxPoint, minPoint) && level->enemies[enemy].state != Entity::DEAD){
+				cout << "Bullet hit enemy" << endl;
 				shipBullets[bullet].state = Entity::DEAD;
 				level->enemies[enemy].state = Entity::DEAD;
 			}
@@ -134,10 +140,14 @@ void checkCollisions(){
 	//check player collision with bombs
 }
 
-bool isBulletCollidingWithEnemy(Vector2f bulletImpactPoint,Vector2f enemyPosition){
-	//see if the impact point is ahead of the bottom point  but within the height of the rectangle
-	return ((bulletImpactPoint.x >= enemyPosition.x) && 
-	(bulletImpactPoint.y >= enemyPosition.y && bulletImpactPoint.y <= enemyPosition.y + 1.0*0.08)) ? true : false;
+/*
+	Function takes a point to test if it's in rectangle
+	maxPoint is a vector used to hold maximum X value and maximum Y value of rectangle
+	minPoint holds min X value and min y Value of rectangle
+	returns true if point is inside, false otherwise
+*/
+bool isPointInsideRectangle(Vector2f point,Vector2f maxPoint, Vector2f minPoint){
+	return (point.x > minPoint.x && point.x < maxPoint.x && point.y > minPoint.y && point.y < maxPoint.y);
 }
 
 

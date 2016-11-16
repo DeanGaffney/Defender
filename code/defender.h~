@@ -171,7 +171,7 @@ public:
 		initalVelocity = 20;
 		state = AWAKE;
 		position = Vector2f(0,0);
-		velocity = Vector2f(velocity*cos(angle*PI/180),velocity*sin(angle*PI/180));
+		velocity = Vector2f(initalVelocity*cos(angle*PI/180),initalVelocity*sin(angle*PI/180));
 	}
 
 	void render () const;
@@ -213,5 +213,5 @@ bool isPointInsideRectangle(Vector2f point);
 bool isPointInsideCircle(Vector2f point,Vector2f center, float radius);
 void cullObjects();
 bool isInScreen(Entity &gameObject);
-bool isBulletCollidingWithEnemy(Vector2f bulletImpactPoint,Vector2f enemyPosition);
+bool isPointInsideRectangle(Vector2f point,Vector2f [] rectangle);
 #endif

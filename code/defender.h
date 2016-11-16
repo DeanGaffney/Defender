@@ -213,5 +213,5 @@ bool isPointInsideRectangle(Vector2f point);
 bool isPointInsideCircle(Vector2f point,Vector2f center, float radius);
 void cullObjects();
 bool isInScreen(Entity &gameObject);
-bool isBulletCollidingWithEnemy(Vector2f bulletImpactPoint,Vector2f enemyPosition);
+bool isPointInsideRectangle(Vector2f point,Vector2f maxPoint, Vector2f minPoint);
 #endif

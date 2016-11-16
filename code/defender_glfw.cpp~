@@ -79,7 +79,7 @@ void Bomb::render() const {
    			glVertex3f(0.0, 0.0, 0.0);
     		glVertex3f(1.0, 0.0, 0.0);
     		glVertex3f(1.0, 1.0, 0.0);
-    		glVertex3f(0  .0, 1.0, 0.0);
+    		glVertex3f(0.0, 1.0, 0.0);
 			glEnd();
 		glPopMatrix();
 }
@@ -89,12 +89,12 @@ void Enemy::render() const {
 	//draw enemy
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
-		glScalef(-0.1, 0.08, 1);		//minus to flip opposite direction to players ship
+		glScalef(0.1, 0.08, 1);		//minus to flip opposite direction to players ship
 		glColor3ub(200,0, 0);			//draws enemy red
 		glBegin(GL_QUADS);      
    			glVertex3f(0.0, 0.0, 0.0);
-    		glVertex3f(1.0, 0.4, 0.0);
-    		glVertex3f(1.0, 0.6, 0.0);
+    		glVertex3f(1.0, 0.0, 0.0);
+    		glVertex3f(1.0, 1.0, 0.0);
     		glVertex3f(0.0, 1.0, 0.0);
 
 			glColor3ub(0, 0, 200);  
@@ -105,19 +105,20 @@ void Enemy::render() const {
     		glVertex3f(0.0, 0.53, 0.0);
 			glEnd();
 			
+			//draw bounding box
 			glColor3ub(139,0,139);
 				glBegin(GL_LINES);
-				glVertex3f(0.1,0.1,0.0);
-				glVertex3f(0.1,0.9,0.0);
+				glVertex3f(0.0,0.0,0.0);
+				glVertex3f(0.0,1.0,0.0);
 				
-				glVertex3f(0.1,0.1,0.0);
-				glVertex3f(0.9,0.1,0.0);
+				glVertex3f(0.0,0.0,0.0);
+				glVertex3f(1.0,0.0,0.0);
 				
-				glVertex3f(0.9,0.1,0.0);
-				glVertex3f(0.9,0.9,0.0);
+				glVertex3f(1.0,0.0,0.0);
+				glVertex3f(1.0,1.0,0.0);
 				
-				glVertex3f(0.9,0.9,0.0);
-				glVertex3f(0.1,0.9,0.0);
+				glVertex3f(1.0,1.0,0.0);
+				glVertex3f(0.0,1.0,0.0);
 			glEnd();
 	glPopMatrix();
 }
@@ -223,22 +224,22 @@ void getInput() {
 	}
 	
 	//fire bullets from ship
-	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
+	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
-	}*/
+	}
 	
 	//fire bombs from ship
-	if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
+	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
 		Bomb & bomb = shipBombs.allocate();
 		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBombTime = 1;
 	}else{
 		previousBombTime -= dt;
-	}
+	}*/
 }
 #endif
 
