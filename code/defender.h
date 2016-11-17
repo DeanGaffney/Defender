@@ -145,7 +145,7 @@ public:
 	Bullet() { 
 		state = AWAKE;
 		position = Vector2f(0,0);
-		velocity = Vector2f(2,0);
+		velocity = Vector2f(0,0);
 	}
 
 	void render () const;
@@ -195,7 +195,7 @@ extern BombPool shipBombs;
 
 // frame timing information
 extern double startTime, currentTime, previousTime, dt;
-extern double previousBulletTime, previousBombTime;
+extern double previousBulletTime, previousBombTime, enemyFireTime;
 
 extern bool fire, fireBomb;
 extern float gravity;

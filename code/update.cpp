@@ -15,11 +15,6 @@ void Ship::update(float dt)  {
 	//restrict ship movement on the x and y axis between the screen
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
-	
-	//automate movement
-	float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
-	float bottomDistance = distancePointFromLevel(position, false);
-	velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;
 }
 
 
@@ -31,21 +26,33 @@ void Bullet::update(float dt)  {
 void Bomb::update(float dt)  {
 //motion for shooting bombs from enemies
    velocity += Vector2f(0,-9.8 * dt);
-   position += velocity*dt;
+   position += velocity * dt;
 }
 
-
 void Enemy::update(float dt)  {
-	position += dt* velocity;
+	velocity.x = -0.2;
+	position += dt * velocity;
 	
 	//update bounding box position
 	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
 	minPoints = Vector2f(position.x,position.y);
 	
+	//allow enemy to fire bullets
+	if(enemyFireTime <= 0){
+		//fire and reset timer
+		Bullet & enemyBullet = enemyBullets.allocate();
+		enemyBullet.position = position;
+		enemyBullet.velocity.x = velocity.x * 2;
+		enemyFireTime = 2;
+	}else{
+		enemyFireTime -= dt;
+	}
+	
+	
 	//choose behaviour based on state
 	if(type == Enemy::SIMPLE){
 		//For Tracking enemies
-		velocity.x = -0.2;
+		
 
 		//moves up and down and detects when about to collide with level
   		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
@@ -89,7 +96,8 @@ void Enemy::update(float dt)  {
 
 //make sure game object is within width of screen
 bool isInScreen(Entity &gameObject){
-	return gameObject.position.x < level->position.x + ASPECT;
+	return gameObject.position.x < level->position.x + ASPECT &&
+		   gameObject.position.x > 0;
 }
 
 void checkCollisions(){
@@ -113,6 +121,9 @@ void checkCollisions(){
 				//do something kill player or lose life
 		}
 	}
+	
+	//check enemy collision with enemy bullets
+	
 	
 	//check player bullets collision with enemy
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
@@ -155,7 +166,6 @@ bool isPointInsideRectangle(Vector2f point,Vector2f maxPoint, Vector2f minPoint)
 	return (point.x > minPoint.x && point.x < maxPoint.x && point.y > minPoint.y && point.y < maxPoint.y);
 }
 
-//http://www.learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-Detection
 bool isPointInsideCircle(Vector2f point,Vector2f center, float radius){	//ideally pass in gameObject.hitBox here 
 	return(point-center).lengthSqr() <= radius*radius;
 }
@@ -176,12 +186,9 @@ float distancePointFromLevel(const Vector2f point, bool ceilingCheck){
 	previousPoint = data[k-1];
 	currentPoint = data[k];
 	
-	//cout << "Previous point : " << previousPoint.x << "," << previousPoint.y << endl;
-	//cout << "Current point : " << currentPoint.x << "," << currentPoint.y << endl;
 	//get slope of line
 	float slope = ((previousPoint.y - currentPoint.y) / (previousPoint.x - currentPoint.x));
-	//cout << "Slope is :" << slope << endl;
-	//cout << "Distance is : " << ((slope * point.x) + (previousPoint.y - (slope * previousPoint.x))) << endl;
+
 	//return distance
 	return ((slope * point.x) + (previousPoint.y - (slope * previousPoint.x)));
 }
@@ -206,7 +213,17 @@ void cullObjects(){
 	for(int shipBomb = shipBombs.size();--shipBomb >= 0;){
 		if(shipBombs[shipBomb].state == Entity::DEAD)shipBombs.free(shipBomb);
 		else if(!isInScreen(shipBombs[shipBomb])){
+			cout << "Bomb left the screen" << endl;
 			shipBombs[shipBomb].state = Entity::DEAD;
+		}
+	}
+	
+	//cull enemy bullets
+	for(int enemyBullet = enemyBullets.size();--enemyBullet >= 0;){
+		if(enemyBullets[enemyBullet].state == Entity::DEAD)enemyBullets.free(enemyBullet);
+		else if(!isInScreen(enemyBullets[enemyBullet])){
+			cout << "Enemy Bullet left the screen" << endl;
+			enemyBullets[enemyBullet].state = Entity::DEAD;
 		}
 	}
 }
@@ -215,10 +232,9 @@ void update() {
 	level->update(dt);
 	ship.update(dt);
 	for(int enemy = 0; enemy < level->enemyLength;enemy++)level->enemies[enemy].update(dt);
-	//cout << "Is ship bullet pool empty?" << shipBullets.isEmpty() << endl;
 	for(int bullet = 0; bullet < shipBullets.size(); bullet++)shipBullets[bullet].update(dt);
 	for(int bomb = 0; bomb < shipBombs.size(); bomb++)shipBombs[bomb].update(dt);
+	for(int bullet = 0; bullet < enemyBullets.size(); bullet++)enemyBullets[bullet].update(dt);
 	checkCollisions();
-	//cout << "Bullet pool size " << shipBullets.size() << endl;
 	cullObjects();
 }

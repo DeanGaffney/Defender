@@ -21,6 +21,7 @@ BulletPool shipBullets(1000);
 BulletPool enemyBullets(1000);
 BombPool shipBombs(1000);
 float gravity = -9.8;
+
 int main() {
 	
 	initGraphics();

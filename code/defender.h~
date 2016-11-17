@@ -195,7 +195,7 @@ extern BombPool shipBombs;
 
 // frame timing information
 extern double startTime, currentTime, previousTime, dt;
-extern double previousBulletTime, previousBombTime;
+extern double previousBulletTime, previousBombTime, enemyFireTime;
 
 extern bool fire, fireBomb;
 extern float gravity;
@@ -208,6 +208,7 @@ void renderRadar();
 void drawRectangle(Vector2f position, Vector2f size);
 void drawRectangle(Vector2f position, float width, float height);
 void drawElipse(Vector2f position, float width, float height);
+void drawElipse(Vector2f position, Vector2f size);
 void render();
 void update();
 void getInput();

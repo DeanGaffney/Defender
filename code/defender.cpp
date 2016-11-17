@@ -12,7 +12,7 @@ GameState gameState = GAME_INTRO;
 
 // frame timing information
 double startTime, currentTime, previousTime, dt;
-double previousBulletTime, previousBombTime;
+double previousBulletTime, previousBombTime, enemyFireTime;
 
 Level * level;
 Ship ship;

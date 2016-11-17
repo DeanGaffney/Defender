@@ -97,7 +97,7 @@ void Bullet::render() const {
 		glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.03, 0.03, 1);
-		glColor3ub(255,255,0);			//draws enemy red
+		glColor3ub(255,255,0);			
 		glBegin(GL_LINES);      
    			glVertex3f(0.0, 0.0, 0.0);
     		glVertex3f(1.0, 0.0, 0.0);
@@ -202,7 +202,7 @@ int initGraphics() {
 	// timing information
     startTime = currentTime = glfwGetTime();
 	previousBulletTime = 0.0;
-
+	enemyFireTime = 0.0;
 	return 0;		// success
 	
 }
@@ -227,6 +227,7 @@ void render() {
     	for(int enemy = 0;enemy < level->enemyLength;++enemy)if(level->enemies[enemy].state != Entity::DEAD)level->enemies[enemy].render();
     	for(int bullet = 0;bullet < shipBullets.size();++bullet)shipBullets[bullet].render();
     	for(int bomb = 0; bomb < shipBombs.size();++bomb)shipBombs[bomb].render();
+    	for(int bullet = 0;bullet < enemyBullets.size();++bullet)enemyBullets[bullet].render();
 	glPopMatrix();
 	renderRadar();
     glfwSwapBuffers(); 
@@ -256,6 +257,7 @@ void getInput() {
 	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
+		bullet.velocity.x = 2;
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
