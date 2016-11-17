@@ -195,17 +195,17 @@ bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck){
 void cullObjects(){
 	//cull ship bullets
 	for(int shipBullet = shipBullets.size();--shipBullet >= 0;){
-		if(!isInScreen(shipBullets[shipBullet])){
+		if(shipBullets[shipBullet].state == Entity::DEAD)shipBullets.free(shipBullet);
+		else if(!isInScreen(shipBullets[shipBullet])){
 			cout << "Bullet left the screen" << endl;
 			shipBullets[shipBullet].state = Entity::DEAD;
-			shipBullets.free(shipBullet);
 		}
 	}
 	
 	//cull ship bombs
 	for(int shipBomb = shipBombs.size();--shipBomb >= 0;){
-		if(!isInScreen(shipBombs[shipBomb])){
-			cout << "Bomb left the screen" << endl;
+		if(shipBombs[shipBomb].state == Entity::DEAD)shipBombs.free(shipBomb);
+		else if(!isInScreen(shipBombs[shipBomb])){
 			shipBombs[shipBomb].state = Entity::DEAD;
 		}
 	}
