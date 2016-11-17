@@ -49,6 +49,7 @@
 	const float ASPECT = float(WINDOW_WIDTH)/float(WINDOW_HEIGHT);
 	const float RADAR_HEIGHT = 0.1;
 	const float RADAR_WIDTH = ASPECT * 0.8;		//80% of screen
+	const float HEALTH_BAR_WIDTH = 0.5;
 	const float RADAR_X = (ASPECT - RADAR_WIDTH) / 2;
 	const float RADAR_Y = 1.0 - RADAR_HEIGHT;
 #endif
@@ -90,15 +91,36 @@ public:
 class Ship : public Entity {
 	
 public:	
+	int health;
+	int lives;
+	double damageRecoveryTime;
+	enum DamageState {RECOVERING,RECOVERED};
+	DamageState damageState;
 	Ship() {
 		state = AWAKE;
 		position = Vector2f(0.02f, 0.5f);
 		velocity = Vector2f(0,0);
+		health = 100;
+		lives = 3;
+		damageState = RECOVERED;
+		damageRecoveryTime = 0.0;
 	}
 
 	void render () const;
 	
 	void update (float dt);
+
+	void takeDamage(const int amount){
+		if(damageRecoveryTime > 0)return;
+		health -= amount;
+		damageRecoveryTime = 0.2;
+		damageState = RECOVERING;
+	}
+
+	void removeLife(){
+		lives--;
+		health = 100;
+	}
 	
 	std::string toString() const {
 		std::ostringstream outs;
@@ -221,6 +243,7 @@ void drawRectangle(Vector2f position, Vector2f size);
 void drawRectangle(Vector2f position, float width, float height);
 void drawElipse(Vector2f position, float width, float height);
 void drawElipse(Vector2f position, Vector2f size);
+void renderHealthBar();
 void render();
 void update();
 void getInput();

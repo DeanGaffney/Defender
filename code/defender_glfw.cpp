@@ -179,6 +179,14 @@ void renderRadar(){
 	glPopMatrix();
 }
 
+void renderHealthBar(){
+	glColor3ub(0,0,0);
+	drawRectangle(Vector2f(0,0.0),HEALTH_BAR_WIDTH,0.05);
+
+	glColor3ub(255,0, 0);
+	drawRectangle(Vector2f(0,0.0),(HEALTH_BAR_WIDTH * ship.health) / 100,0.05);
+}
+
 int initGraphics() {
 	
 	glfwInit(); 
@@ -204,7 +212,6 @@ int initGraphics() {
 	previousBulletTime = 0.0;
 	enemyFireTime = 0.0;
 	return 0;		// success
-	
 }
 
 int deinitGraphics() {
@@ -230,6 +237,7 @@ void render() {
     	for(int bullet = 0;bullet < enemyBullets.size();++bullet)enemyBullets[bullet].render();
 	glPopMatrix();
 	renderRadar();
+	renderHealthBar();
     glfwSwapBuffers(); 
 }
 
@@ -255,14 +263,12 @@ void getInput() {
 	
 	//fire bullets from ship
 	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
-		cout << "Pressed space bar should have shot bullet" << endl;
 		Bullet & bullet = shipBullets.allocate();
 		bullet.reset();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		bullet.velocity.x = 2;
 		previousBulletTime = 0.1;
 	}else{
-		cout << "Bullet timer is not up" << endl;
 		previousBulletTime -= dt;
 	}
 	

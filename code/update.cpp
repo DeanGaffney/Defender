@@ -16,6 +16,20 @@ void Ship::update(float dt)  {
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
 
+	//update bounding box position
+	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
+	minPoints = Vector2f(position.x,position.y);
+
+	cout << "Ships health is : " << health << endl;
+	cout << "Lives remaining : " << lives << endl;
+	//brief timer to avoid any damage taken multiplying
+	if(damageState == RECOVERING)damageRecoveryTime -= dt;
+
+	//check if player is dead
+	if(health <= 0)removeLife();
+
+	//check lives
+	if(lives <= 0)ship.state = Entity::DEAD;
 }
 
 
@@ -30,7 +44,7 @@ void Bomb::update(float dt)  {
    position += velocity * dt;
 }
 
-void Enemy::update(float dt)  {
+void Enemy::update(float dt) {
 	velocity.x = -0.2;
 	position += dt * velocity;
 	
@@ -109,8 +123,7 @@ void checkCollisions(){
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.0,0.0*0.08),false)) || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.6*0.08),true))  || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.4*0.08),false))){
-		//do things (lose life or stuff)
-		cout << "ship collided at one of the corner points" << endl;
+		ship.takeDamage(5);
 	}
 	
 	//check player collision with enemies
@@ -119,13 +132,18 @@ void checkCollisions(){
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints)){
-				cout << "Player hit enemy" << endl;
-				//do something kill player or lose life
+			ship.takeDamage(10);
+			level->enemies[enemy].state = Entity::DEAD;
 		}
 	}
 	
-	//check enemy collision with enemy bullets
-	
+	//check player collision with enemy bullets
+	for(int enemyBullet = 0; enemyBullet < enemyBullets.size(); enemyBullet++){
+		if(isPointInsideRectangle(enemyBullets[enemyBullet].position, ship.maxPoints, ship.minPoints)){
+			ship.takeDamage(15);
+			enemyBullets[enemyBullet].state = Entity::DEAD;
+		}
+	}
 	
 	//check player bullets collision with enemy
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
