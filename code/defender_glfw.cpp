@@ -110,13 +110,8 @@ void Bomb::render() const {
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.03, 0.03, 1);
 		glColor3ub(255,255,0);			//draws enemy red
-		glBegin(GL_QUADS);      
-   			glVertex3f(0.0, 0.0, 0.0);
-    		glVertex3f(1.0, 0.0, 0.0);
-    		glVertex3f(1.0, 1.0, 0.0);
-    		glVertex3f(0.0, 1.0, 0.0);
-			glEnd();
-		glPopMatrix();
+		drawElipse(Vector2f(0,0),1,1);
+	glPopMatrix();
 }
 
 
@@ -180,11 +175,13 @@ void renderRadar(){
 }
 
 void renderHealthBar(){
+	glPushMatrix();
 	glColor3ub(0,0,0);
 	drawRectangle(Vector2f(0,0.0),HEALTH_BAR_WIDTH,0.05);
 
 	glColor3ub(255,0, 0);
 	drawRectangle(Vector2f(0,0.0),(HEALTH_BAR_WIDTH * ship.health) / 100,0.05);
+	glPopMatrix();
 }
 
 int initGraphics() {
@@ -262,7 +259,7 @@ void getInput() {
 	}
 	
 	//fire bullets from ship
-	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
+	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
 		bullet.reset();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
@@ -270,17 +267,17 @@ void getInput() {
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
-	}
+	}*/
 	
 	//fire bombs from ship
-	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
+	if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
 		Bomb & bomb = shipBombs.allocate();
 		bomb.reset();
 		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBombTime = 0.5;
 	}else{
 		previousBombTime -= dt;
-	}*/
+	}
 }
 #endif
 
