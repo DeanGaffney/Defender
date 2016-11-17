@@ -255,17 +255,21 @@ void getInput() {
 	
 	//fire bullets from ship
 	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
+		cout << "Pressed space bar should have shot bullet" << endl;
 		Bullet & bullet = shipBullets.allocate();
+		bullet.reset();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		bullet.velocity.x = 2;
 		previousBulletTime = 0.1;
 	}else{
+		cout << "Bullet timer is not up" << endl;
 		previousBulletTime -= dt;
 	}
 	
 	//fire bombs from ship
 	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
 		Bomb & bomb = shipBombs.allocate();
+		bomb.reset();
 		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBombTime = 0.5;
 	}else{

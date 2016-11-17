@@ -15,6 +15,7 @@ void Ship::update(float dt)  {
 	//restrict ship movement on the x and y axis between the screen
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
+
 }
 
 
@@ -41,8 +42,9 @@ void Enemy::update(float dt)  {
 	if(enemyFireTime <= 0){
 		//fire and reset timer
 		Bullet & enemyBullet = enemyBullets.allocate();
+		enemyBullet.reset();
 		enemyBullet.position = position;
-		enemyBullet.velocity.x = velocity.x * 2;
+		enemyBullet.velocity.x = velocity.x * 5;
 		enemyFireTime = 2;
 	}else{
 		enemyFireTime -= dt;

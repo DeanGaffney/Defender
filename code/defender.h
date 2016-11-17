@@ -124,8 +124,6 @@ public:
 		state = ASLEEP;
 		position = Vector2f::ZERO;
 		velocity = Vector2f::ZERO;
-		center = Vector2f::ZERO;
-		radius = 1;
 	} 
 	
 	void render () const;
@@ -152,6 +150,12 @@ public:
 	
 	void update (float dt);
 
+	void reset(){
+		position = Vector2f::ZERO;
+		velocity = Vector2f::ZERO;
+		state = AWAKE;
+	}
+
 	std::string toString() const {
 		std::ostringstream outs;
 		outs <<"Bullet " <<"\t Position = " <<position <<"\t Velocity = " <<velocity;
@@ -173,6 +177,14 @@ public:
 		initalVelocity = 2;
 		state = AWAKE;
 		position = Vector2f(0,0);
+		velocity = Vector2f(initalVelocity*cos(angle*PI/180),initalVelocity*sin(angle*PI/180));
+	}
+
+	void reset(){
+		angle = 45;
+		initalVelocity = 2;
+		state = AWAKE;
+		position = Vector2f::ZERO;
 		velocity = Vector2f(initalVelocity*cos(angle*PI/180),initalVelocity*sin(angle*PI/180));
 	}
 
