@@ -170,7 +170,7 @@ public:
 	float initalVelocity;
 	Bomb() {
 		angle = 45;
-		initalVelocity = 20;
+		initalVelocity = 2;
 		state = AWAKE;
 		position = Vector2f(0,0);
 		velocity = Vector2f(initalVelocity*cos(angle*PI/180),initalVelocity*sin(angle*PI/180));
@@ -205,6 +205,10 @@ extern float gravity;
 int initGraphics();
 int deinitGraphics();
 void renderRadar();
+void drawRectangle(Vector2f position, Vector2f size);
+void drawRectangle(Vector2f position, float width, float height);
+void drawElipse(Vector2f position, float width, float height);
+void drawElipse(Vector2f position, Vector2f size);
 void render();
 void update();
 void getInput();

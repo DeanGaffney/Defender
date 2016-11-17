@@ -30,8 +30,8 @@ void Bullet::update(float dt)  {
 
 void Bomb::update(float dt)  {
 //motion for shooting bombs from enemies
-   	//velocity += Vector2f(0,-9.8*dt);
-   // position += velocity*dt;
+   velocity += Vector2f(0,-9.8 * dt);
+   position += velocity*dt;
 }
 
 
@@ -42,6 +42,7 @@ void Enemy::update(float dt)  {
 	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
 	minPoints = Vector2f(position.x,position.y);
 	
+	//choose behaviour based on state
 	if(type == Enemy::SIMPLE){
 		//For Tracking enemies
 		velocity.x = -0.2;
@@ -68,40 +69,16 @@ void Enemy::update(float dt)  {
 	  		//update position
 	  		
 	  		//clamp position y between max and min points in level
-	  	
-	  	
 	  	*/
-	  	
-	  	/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
-		float bottomDistance = distancePointFromLevel(position,false);
-		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
-		
-		
-		
-    
-    
-
 	}else{
 	//For Tracking enemies
-		/*velocity.x = -0.2;
-		//velocity.y = 0;
-		//moves up and down and detects when about to collide with level
-  		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
-  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
-  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false))velocity.y = -0.3;
-  		}
-  	  	else if((checkPointCollisionWithLevel(position + Vector2f(0.2,-0.1),false))){ //check collision in front and below for ground
-  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0; //if space under position move down,else dont
-  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true))velocity.y = 0.3;
-  	  	}else{
-		 	velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
-	  	}
-	  	*/
+	  	
 	  	//get height of rectangle
 		//get distance from ceiling
 		//get bottom point of rectangle and get distance
 		//compare distances
 		// move accordingly
+		
 		/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
 		float bottomDistance = distancePointFromLevel(position,false);
 		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
@@ -128,38 +105,44 @@ void checkCollisions(){
 	
 	//check player collision with enemies
 	for(int enemy = 0; enemy < level->enemyLength; enemy++){
-		//make rectangle from current enemy position, think about how you could optimize this by maybe adding it into the bullet collision
-		//because your recalculating these 2 variables again and you might not need to.
-		
-		
 		if(isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints)){
 				cout << "Player hit enemy" << endl;
 				//do something kill player or lose life
-			}
+		}
 	}
 	
-	//check bullet collision with enemy, checks bullet impact point with the left hand side of enemy rectangle
+	//check player bullets collision with enemy
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){
 		for(int enemy = 0; enemy < level->enemyLength;enemy++){
 			//send in impact point of bullet and enemy rectangle
-			//Vector2f maxPoint = Vector2f(level->enemies[enemy].position.x + (1.0 * 0.1),level->enemies[enemy].position.y + (1.0 * 0.08));
-			//Vector2f minPoint = Vector2f(level->enemies[enemy].position.x,level->enemies[enemy].position.y);
-			
 			if(isPointInsideRectangle(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0), level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) && 
-			level->enemies[enemy].state != Entity::DEAD){
-				cout << "Bullet hit enemy" << endl;
-				shipBullets[bullet].state = Entity::DEAD;
-				level->enemies[enemy].state = Entity::DEAD;
+				level->enemies[enemy].state != Entity::DEAD){
+					cout << "Bullet hit enemy" << endl;
+					shipBullets[bullet].state = Entity::DEAD;
+					level->enemies[enemy].state = Entity::DEAD;
 			}
 		}
 	}
 	
-	
-	
-	//check player collision with bombs
+	//check enemy collision with bombs
+	for(int bomb = 0; bomb < shipBombs.size();bomb++){
+		for(int enemy = 0; enemy < level->enemyLength;enemy++){
+				//glScalef(0.03, 0.03, 1);
+				//bomb goes at an upward arc so it will never hit left side or top
+				//only check 2 bottom corners and top right corner of the bomb for impact
+			if(isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) ||	//bottom left corner
+			   isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) ||	//bottom right corner
+			   isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) && 
+			   level->enemies[enemy].state != Entity::DEAD){	//top right corner
+			   		cout << "Bomb hit enemy" << endl;
+			   		shipBombs[bomb].state = Entity::DEAD;
+			   		level->enemies[enemy].state = Entity::DEAD;
+			   }	
+		}
+	}
 }
 
 /*
@@ -172,35 +155,8 @@ bool isPointInsideRectangle(Vector2f point,Vector2f maxPoint, Vector2f minPoint)
 	return (point.x > minPoint.x && point.x < maxPoint.x && point.y > minPoint.y && point.y < maxPoint.y);
 }
 
-
-
-//checks if gameObjects point is inside rectangle, I would consider making a rectangle class, or an array of vectors to pass into this as an argument
-//could also pass in 2 vector lengths height and width representing rectangle??
-bool isPointInsideRectangle(Vector2f point){ //ideally pass in gameObject.hitBox here 
-//r is rectangle
-//m is point thats being tested
-// a starts at top left and goes clock wise and ends bottom left with d coordiante.
-    /*Vector2f AB = Vector2f(r.A, r.B);
-    Vector2f AM = Vector2f(r.A, point);
-    Vector2f BC = Vector2f(r.B, r.C);
-    Vector2f BM = Vector2f(r.B, point);
-    Vector2f dotABAM = Vector2f(AB, AM);
-    Vector2f dotABAB = Vector2f(AB, AB);
-    Vector2f dotBCBM = Vector2f(BC, BM);
-    Vector2f dotBCBC = Vector2f(BC, BC);
-    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;*/
-}
-
-
 //http://www.learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-Detection
 bool isPointInsideCircle(Vector2f point,Vector2f center, float radius){	//ideally pass in gameObject.hitBox here 
-	//get center point of circle
-	//calculate half-extents and and center of rectangle being tested against Vector2f
-	//get the difference between the circle center and the rectangle center Vector2
-	//clamp the difference between the -half extents and positive half extent
-	//closest point on rectangle to circle is then clamped vector + rectangle center
-	//difference = closest - circle center
-	//return difference length <= radius (if true collision,false means no collision)
 	return(point-center).lengthSqr() <= radius*radius;
 }
 
@@ -239,18 +195,21 @@ bool checkPointCollisionWithLevel(const Vector2f point, bool ceilingCheck){
 void cullObjects(){
 	//cull ship bullets
 	for(int shipBullet = shipBullets.size();--shipBullet >= 0;){
-		if(!isInScreen(shipBullets[shipBullet]))cout << "Bullet left the screen" << endl;
-		if(shipBullets[shipBullet].state == Entity::DEAD){			//if dead (hit enemy or out of screen then set to dead)
+		if(!isInScreen(shipBullets[shipBullet])){
+			cout << "Bullet left the screen" << endl;
+			shipBullets[shipBullet].state = Entity::DEAD;
 			shipBullets.free(shipBullet);
-		}else if(shipBullets[shipBullet].state == Entity::AWAKE && !isInScreen(shipBullets[shipBullet])){
-			shipBullets[shipBullet].state = Entity::DEAD;			//set to dead
 		}
 	}
 	
-	//TO DO : cull enemy bullets && bombs
-	
-	
-	//cull enemies
+	//cull ship bombs
+	for(int shipBomb = shipBombs.size();--shipBomb >= 0;){
+		if(!isInScreen(shipBombs[shipBomb])){
+			cout << "Bomb left the screen" << endl;
+			shipBombs[shipBomb].state = Entity::DEAD;
+			shipBombs.free(shipBomb);
+		}
+	}
 }
 
 void update() {
