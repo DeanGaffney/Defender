@@ -73,13 +73,17 @@ int main() {
 				render();
 				getInput();
 				if (ship.state==Entity::DEAD)gameState = LEVEL_OVER;
+				// want it for when player reaches end of level
+				//if player loses life restart level
+				//if no lives left then go to game over do not restart level
 				if(glfwGetKey(50)){
 					gameState = LEVEL_START;
 					currentLevel++;
 				}
-				//if(ship.position.x >= level->ground[level->groundLength-1].x){
-					
-				//}
+				if(ship.position.x >= level->ground[level->groundLength-1].x){
+					gameState = LEVEL_START;
+					currentLevel++;
+				}
 				break;
 			}
 

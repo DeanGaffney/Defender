@@ -73,13 +73,14 @@ int main() {
 				render();
 				getInput();
 				if (ship.state==Entity::DEAD)gameState = LEVEL_OVER;
-				if(glwfGetKey(50)){
+				if(glfwGetKey(50)){
 					gameState = LEVEL_START;
 					currentLevel++;
 				}
-				//if(ship.position.x >= level->ground[level->groundLength-1].x){
-					
-				//}
+				if(ship.position.x >= level->ground[level->groundLength-1].x){
+					gameState = LEVEL_START;
+					currentLevel++;
+				}
 				break;
 			}
 
