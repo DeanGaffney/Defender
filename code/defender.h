@@ -63,6 +63,7 @@ using namespace std;
 //list of levels
 extern string levels [];
 extern int currentlevel;
+extern const int NUMBER_OF_LEVELS;
 // Basic games object wth state, position and velocity
 class Entity {
 public:
@@ -122,6 +123,11 @@ public:
 
 	void removeLife(){
 		lives--;
+		health = 100;
+	}
+	
+	void resetLives(){
+		lives = 3;
 		health = 100;
 	}
 	

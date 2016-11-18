@@ -22,8 +22,6 @@ void Ship::update(float dt)  {
 	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
 	minPoints = Vector2f(position.x,position.y);
 
-	cout << "Ships health is : " << health << endl;
-	cout << "Lives remaining : " << lives << endl;
 	//brief timer to avoid any damage taken multiplying
 	if(damageState == RECOVERING)damageRecoveryTime -= dt;
 
@@ -76,12 +74,10 @@ void Enemy::update(float dt) {
 		
 
 		//moves up and down and detects when about to collide with level
-  		if((checkPointCollisionWithLevel(position + Vector2f(0.2,0.1),true))){		//check collision in front and above for ceiling
-  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false)) ? -0.3 : 0.0; //if theres space under position move down, else dont
-  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),false))velocity.y = -0.3;
+  		if((checkPointCollisionWithLevel(position + Vector2f(-0.3,0.1),true))){		//check collision in front and above for ceiling
+  	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,-0.1),false))velocity.y = -0.3;
   		}
-  	  	else if((checkPointCollisionWithLevel(position + Vector2f(0.2,-0.1),false))){ //check collision in front and below for ground
-  	  	 //velocity.y = (!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true)) ? 0.3 : 0.0; //if space under position move down,else dont
+  	  	else if((checkPointCollisionWithLevel(position + Vector2f(-0.3,-0.1),false))){ //check collision in front and below for ground
   	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,0.1),true))velocity.y = 0.3;
   	  	}else{
 		 	velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
@@ -100,16 +96,7 @@ void Enemy::update(float dt) {
 	  	*/
 	}else{
 	//For Tracking enemies
-	  	
-	  	//get height of rectangle
-		//get distance from ceiling
-		//get bottom point of rectangle and get distance
-		//compare distances
-		// move accordingly
-		
-		/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
-		float bottomDistance = distancePointFromLevel(position,false);
-		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
+	
 	}
 }
 	
@@ -156,7 +143,6 @@ void checkCollisions(){
 			//send in impact point of bullet and enemy rectangle
 			if(isPointInsideRectangle(shipBullets[bullet].position + Vector2f(1.0 * 0.03,0.0), level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) && 
 				level->enemies[enemy].state != Entity::DEAD){
-					cout << "Bullet hit enemy" << endl;
 					shipBullets[bullet].state = Entity::DEAD;
 					level->enemies[enemy].state = Entity::DEAD;
 			}
@@ -166,14 +152,12 @@ void checkCollisions(){
 	//check enemy collision with bombs
 	for(int bomb = 0; bomb < shipBombs.size();bomb++){
 		for(int enemy = 0; enemy < level->enemyLength;enemy++){
-				//glScalef(0.03, 0.03, 1);
 				//bomb goes at an upward arc so it will never hit left side or top
 				//only check 2 bottom corners and top right corner of the bomb for impact
 			if(isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) ||	//bottom left corner
 			   isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) ||	//bottom right corner
 			   isPointInsideRectangle(shipBombs[bomb].position,level->enemies[enemy].maxPoints, level->enemies[enemy].minPoints) && 
 			   level->enemies[enemy].state != Entity::DEAD){	//top right corner
-			   		cout << "Bomb hit enemy" << endl;
 			   		shipBombs[bomb].state = Entity::DEAD;
 			   		level->enemies[enemy].state = Entity::DEAD;
 			   }	
@@ -229,7 +213,6 @@ void cullObjects(){
 	for(int shipBullet = shipBullets.size();--shipBullet >= 0;){
 		if(shipBullets[shipBullet].state == Entity::DEAD)shipBullets.free(shipBullet);
 		else if(!isInScreen(shipBullets[shipBullet])){
-			cout << "Bullet left the screen" << endl;
 			shipBullets[shipBullet].state = Entity::DEAD;
 		}
 	}
@@ -238,7 +221,6 @@ void cullObjects(){
 	for(int shipBomb = shipBombs.size();--shipBomb >= 0;){
 		if(shipBombs[shipBomb].state == Entity::DEAD)shipBombs.free(shipBomb);
 		else if(!isInScreen(shipBombs[shipBomb])){
-			cout << "Bomb left the screen" << endl;
 			shipBombs[shipBomb].state = Entity::DEAD;
 		}
 	}
@@ -247,7 +229,6 @@ void cullObjects(){
 	for(int enemyBullet = enemyBullets.size();--enemyBullet >= 0;){
 		if(enemyBullets[enemyBullet].state == Entity::DEAD)enemyBullets.free(enemyBullet);
 		else if(!isInScreen(enemyBullets[enemyBullet])){
-			cout << "Enemy Bullet left the screen" << endl;
 			enemyBullets[enemyBullet].state = Entity::DEAD;
 		}
 	}
