@@ -60,6 +60,9 @@ extern GameState gameState;
 
 using namespace std;
 
+//list of levels
+extern string levels [];
+extern int currentlevel;
 // Basic games object wth state, position and velocity
 class Entity {
 public:

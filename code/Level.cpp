@@ -174,7 +174,6 @@ std::string Level::toString() const {
 	
 }
 
-
 std::ostream& operator <<(std::ostream& outputStream, const Level& level) {
 	outputStream <<level.toString();
 	return outputStream;

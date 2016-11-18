@@ -43,7 +43,7 @@ void Bullet::update(float dt)  {
 }
 
 void Bomb::update(float dt)  {
-	frmae++;
+	frame++;
 //motion for shooting bombs from enemies
    velocity += Vector2f(0,-9.8 * dt);
    position += velocity * dt;
@@ -252,6 +252,8 @@ void cullObjects(){
 		}
 	}
 }
+
+
 
 void update() {
 	level->update(dt);

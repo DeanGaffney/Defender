@@ -253,6 +253,7 @@ void cullObjects(){
 	}
 }
 
+
 void update() {
 	level->update(dt);
 	ship.update(dt);

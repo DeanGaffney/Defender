@@ -3,7 +3,7 @@
 // @author kmurphy
 // @brief  Implementation of class to represent a Level in the defender game
 // ===============================================
-
+//
 #include <iostream>
 #include <fstream>
 
@@ -172,6 +172,19 @@ std::string Level::toString() const {
 		
 	return outs.str();
 	
+}
+
+//checks if there are enemies remaining in the level
+bool levelHasEnemiesRemaining(){
+	for(int enemy = 0; enemy < enemyLength; enemy++){
+		if(enemies[enemy].state == Entity::AWAKE)return true;
+	}
+	return false;
+}
+
+// level is over if level has no enemies remaining or ship reached end of level.
+bool isLevelOver(Vector2f shipPosition){
+	return (!levelHasEnemiesRemaining() || shipPosition.x >= ground[groundLength-1].x);
 }
 
 

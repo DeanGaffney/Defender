@@ -27,8 +27,9 @@ int main() {
 	initGraphics();
 
 	bool done = false;
-		
-	level = new Level("test");
+	string levels [] = {"test","windy"};
+	int currentLevel = 0;
+	level = new Level(levels[currentLevel]);
 	cout << *level;
 	cout << *level;
 	cout << *level;
@@ -59,7 +60,7 @@ int main() {
 			// Create level using data in file and start playing level
 			case(LEVEL_START): {
 				if (level != NULL) {  delete level; level = NULL; }
-				level = new Level("test");
+				level = new Level(levels[currentLevel]);
 				cout << *level;
 				printf ("Game state changed from LEVEL_START to LEVEL_PLAY\n");
 				gameState = LEVEL_PLAY;
@@ -71,7 +72,14 @@ int main() {
 				update();
 				render();
 				getInput();
-				if (ship.state==Entity::DEAD) gameState = LEVEL_OVER;
+				if (ship.state==Entity::DEAD)gameState = LEVEL_OVER;
+				if(glfwGetKey(50)){
+					gameState = LEVEL_START;
+					currentLevel++;
+				}
+				//if(ship.position.x >= level->ground[level->groundLength-1].x){
+					
+				//}
 				break;
 			}
 
@@ -102,6 +110,19 @@ int main() {
 		done = done || (currentTime-startTime>40);
 				
 	}
+	
+	//checks if there are enemies remaining in the level
+/*bool levelHasEnemiesRemaining(){
+	for(int enemy = 0; enemy < enemyLength; enemy++){
+		if(enemies[enemy].state == Entity::AWAKE)return true;
+	}
+	return false;
+}
+
+// level is over if level has no enemies remaining or ship reached end of level.
+bool isLevelOver(Vector2f shipPosition){
+	return (!levelHasEnemiesRemaining() || shipPosition.x >= ground[groundLength-1].x);
+}*/
 
 	// free remaining resources
 //	if (level != NULL) delete level;

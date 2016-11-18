@@ -58,7 +58,7 @@ void Ship::render() const {
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.1, 0.08, 1);
 		//glColor3ub(0,200, 0);
-		//make ship flicker
+		//make ship change colours
 		if(frame % 100 <= 50){
 			glColor3ub(255,0, 0);
 		}else{
