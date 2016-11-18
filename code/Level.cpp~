@@ -128,7 +128,7 @@ Level::Level (const std::string filename) {
 				std::cout <<"here " <<index <<std::endl;
 				std::stringstream stream(line);
 				stream >>type >>enemies[index].position >>enemies[index].velocity;
-				enemies[index].type = (type==1 ? Enemy::SIMPLE : Enemy::TRACKING);
+				enemies[index].type = (type==0 ? Enemy::SIMPLE : Enemy::TRACKING);
 				if (++index==enemyLength) state = END;
 				break;
 
@@ -173,20 +173,6 @@ std::string Level::toString() const {
 	return outs.str();
 	
 }
-
-//checks if there are enemies remaining in the level
-bool levelHasEnemiesRemaining(){
-	for(int enemy = 0; enemy < enemyLength; enemy++){
-		if(enemies[enemy].state == Entity::AWAKE)return true;
-	}
-	return false;
-}
-
-// level is over if level has no enemies remaining or ship reached end of level.
-bool isLevelOver(Vector2f shipPosition){
-	return (!levelHasEnemiesRemaining() || shipPosition.x >= ground[groundLength-1].x);
-}
-
 
 std::ostream& operator <<(std::ostream& outputStream, const Level& level) {
 	outputStream <<level.toString();

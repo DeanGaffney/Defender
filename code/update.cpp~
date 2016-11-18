@@ -48,7 +48,8 @@ void Bomb::update(float dt)  {
 }
 
 void Enemy::update(float dt) {
-	velocity.x = -0.2;
+	if(state == Entity::DEAD)return;
+	
 	position += dt * velocity;
 	frame++;
 	//update bounding box position
@@ -61,7 +62,7 @@ void Enemy::update(float dt) {
 		Bullet & enemyBullet = enemyBullets.allocate();
 		enemyBullet.reset();
 		enemyBullet.position = position;
-		enemyBullet.velocity.x = velocity.x * 5;
+		enemyBullet.velocity.x = -2;
 		enemyFireTime = 2;
 	}else{
 		enemyFireTime -= dt;
@@ -70,10 +71,19 @@ void Enemy::update(float dt) {
 	
 	//choose behaviour based on state
 	if(type == Enemy::SIMPLE){
-		//For Tracking enemies
-		
-
+		//For Simple enemies
 		//moves up and down and detects when about to collide with level
+  		if((checkPointCollisionWithLevel(maxPoints + Vector2f(0,0.1),true))){
+  			velocity.y = -0.2;
+  		}
+  		else if((checkPointCollisionWithLevel(position + Vector2f(0,-0.1),false))){
+  			velocity.y = 0.2;
+  		}
+  			
+	}else{
+		//For Tracking enemies
+		//navigates through level
+		velocity.x = -0.2;
   		if((checkPointCollisionWithLevel(position + Vector2f(-0.3,0.1),true))){		//check collision in front and above for ceiling
   	  	 	if(!checkPointCollisionWithLevel(position + Vector2f(0.0,-0.1),false))velocity.y = -0.3;
   		}
@@ -82,21 +92,6 @@ void Enemy::update(float dt) {
   	  	}else{
 		 	velocity.y = 0.0;		//if ship isnt going to collide then move as normal with no y velocity, probably change this to chase player
 	  	}
-	  	
-	  	/*
-	  		if(randomFLoat < chance){
-	  			float theta = randFloat (0,2*M_PI);
-	  			float r = randFloat (0.5,1);
-	  			velocity.set = (r cos(theta),r sin(theta));
-	  		}
-	  		
-	  		//update position
-	  		
-	  		//clamp position y between max and min points in level
-	  	*/
-	}else{
-	//For Tracking enemies
-	
 	}
 }
 	

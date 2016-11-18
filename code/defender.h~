@@ -63,6 +63,7 @@ using namespace std;
 //list of levels
 extern string levels [];
 extern int currentlevel;
+extern const int NUMBER_OF_LEVELS;
 // Basic games object wth state, position and velocity
 class Entity {
 public:
@@ -153,7 +154,7 @@ public:
 		type = SIMPLE;
 		state = ASLEEP;
 		position = Vector2f::ZERO;
-		velocity = Vector2f::ZERO;
+		velocity = Vector2f(0,0.1);
 	} 
 	
 	void render () const;

@@ -128,7 +128,7 @@ Level::Level (const std::string filename) {
 				std::cout <<"here " <<index <<std::endl;
 				std::stringstream stream(line);
 				stream >>type >>enemies[index].position >>enemies[index].velocity;
-				enemies[index].type = (type==1 ? Enemy::SIMPLE : Enemy::TRACKING);
+				enemies[index].type = (type==0 ? Enemy::SIMPLE : Enemy::TRACKING);
 				if (++index==enemyLength) state = END;
 				break;
 

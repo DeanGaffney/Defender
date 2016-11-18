@@ -154,7 +154,7 @@ public:
 		type = SIMPLE;
 		state = ASLEEP;
 		position = Vector2f::ZERO;
-		velocity = Vector2f::ZERO;
+		velocity = Vector2f(0,-0.1);
 	} 
 	
 	void render () const;
