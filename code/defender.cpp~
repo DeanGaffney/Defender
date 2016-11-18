@@ -1,6 +1,7 @@
 // ===============================================
 // @file   defender.h
-// @author kmurphy
+// @author Dean Gaffney
+// @student 20067423
 // @practical defender
 // @brief  Header file for PSP+GLFW(OpenGL) dfender game
 // ===============================================
@@ -27,7 +28,7 @@ int main() {
 	initGraphics();
 
 	bool done = false;
-	string levels [] = {"awkward",""test","windy"};
+	string levels [] = {"awkward","test","windy"};
 	int currentLevel = 0;
 	const int NUMBER_OF_LEVELS = 2;
 	level = new Level(levels[currentLevel]);

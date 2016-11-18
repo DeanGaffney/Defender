@@ -2,7 +2,7 @@
 
 // ===============================================
 // @file   defender.h
-// @author kmurphy
+// @author Dean Gaffney
 // @practical defender
 // @brief  Header file for PSP+GLFW(OpenGL) defender game
 // ===============================================
@@ -154,7 +154,7 @@ public:
 		type = SIMPLE;
 		state = ASLEEP;
 		position = Vector2f::ZERO;
-		velocity = Vector2f(0,0.1);
+		velocity = Vector2f(0,-0.1);
 	} 
 	
 	void render () const;

@@ -1,3 +1,11 @@
+// ===============================================
+// @file   defender_glfw.h
+// @author Dean Gaffney
+// @student 20067423
+// @practical defender
+// @brief  Cpp file for PSP+GLFW(OpenGL) defender game
+// ==============================================
+
 #ifndef PSP
 
 #include "defender.h"
@@ -76,24 +84,7 @@ void Ship::render() const {
     			glVertex3f(1.1, 0.47, 0.0);
    				glVertex3f(1.1, 0.53, 0.0);
     			glVertex3f(0.0, 0.53, 0.0);
-    			
-    			
 		glEnd();
-		
-		glColor3ub(139,0,139);
-				glBegin(GL_LINES);
-				glVertex3f(0.1,0.1,0.0);
-				glVertex3f(0.1,0.9,0.0);
-				
-				glVertex3f(0.1,0.1,0.0);
-				glVertex3f(0.9,0.1,0.0);
-				
-				glVertex3f(0.9,0.1,0.0);
-				glVertex3f(0.9,0.9,0.0);
-				
-				glVertex3f(0.9,0.9,0.0);
-				glVertex3f(0.1,0.9,0.0);
-			glEnd();
 	glPopMatrix();
 }
 
@@ -140,21 +131,6 @@ void Enemy::render() const {
 		drawElipse(Vector2f(0.55,0.7),0.1,0.05);
 		drawRectangle(Vector2f(0.4,0.4),0.05,0.15);
 		
-		//bouding box
-		glColor3ub(139,0,139);
-				glBegin(GL_LINES);
-				glVertex3f(1.0,0.0,0.0);
-				glVertex3f(0.0,1.0,0.0);
-				
-				glVertex3f(0.0,0.0,0.0);
-				glVertex3f(1.0,0.0,0.0);
-				
-				glVertex3f(1.0,0.0,0.0);
-				glVertex3f(1.0,1.0,0.0);
-				
-				glVertex3f(1.0,1.0,0.0);
-				glVertex3f(0.0,1.0,0.0);
-			glEnd();
 	glPopMatrix();
 }
 
@@ -171,15 +147,7 @@ void renderRadar(){
 				glVertex3f(0.0,1.0,0.0);
 			glEnd();
 			glColor3ub(0,255,0);
-		//radar guide lines for scaling
-			glBegin(GL_LINES);
-				glVertex3f(0.0,0.0,0.0);
-				glVertex3f(1.0,1.0,0.0);
-				
-				glVertex3f(1.0,0.0,0.0);
-				glVertex3f(0.0,1.0,0.0);
-			glEnd();
-		
+			
 		//scale level and draw it in radar
 		glScalef(0.05,1,1);
 			level->render();

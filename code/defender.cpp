@@ -1,8 +1,9 @@
 // ===============================================
 // @file   defender.h
-// @author kmurphy
+// @author Dean Gaffney
+// @student 20067423
 // @practical defender
-// @brief  Header file for PSP+GLFW(OpenGL) dfender game
+// @brief  Header file for PSP+GLFW(OpenGL) defender game
 // ===============================================
 
 #include "defender.h"

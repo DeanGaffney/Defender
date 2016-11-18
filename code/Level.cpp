@@ -1,9 +1,11 @@
 // ===============================================
-// @file   Level.h
-// @author kmurphy
-// @brief  Implementation of class to represent a Level in the defender game
-// ===============================================
-//
+// @file   defender.h
+// @author Dean Gaffney
+// @student 20067423
+// @practical defender
+// @brief  Header file for PSP+GLFW(OpenGL) dfender game
+// ==============================================
+
 #include <iostream>
 #include <fstream>
 
