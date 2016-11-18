@@ -76,10 +76,13 @@ int main() {
 				// want it for when player reaches end of level
 				//if player loses life restart level
 				//if no lives left then go to game over do not restart level
+				
+				//key press 2
 				if(glfwGetKey(50)){
 					gameState = LEVEL_START;
 					currentLevel++;
 				}
+				//player reaches end of level,switch level
 				if(ship.position.x >= level->ground[level->groundLength-1].x){
 					gameState = LEVEL_START;
 					currentLevel++;
