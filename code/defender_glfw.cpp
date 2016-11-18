@@ -57,9 +57,13 @@ void Ship::render() const {
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.1, 0.08, 1);
-		glColor3ub(0,200, 0);
-		glColor3ub(255,0, 0);
-		
+		//glColor3ub(0,200, 0);
+		//make ship flicker
+		if(frame % 100 <= 50){
+			glColor3ub(255,0, 0);
+		}else{
+			glColor3ub(0,255,0);
+		}
 		glBegin(GL_QUADS);      
    				glVertex3f(0.0, 0.0, 0.0);
     			glVertex3f(1.0, 0.4, 0.0);
@@ -119,11 +123,19 @@ void Enemy::render() const {
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.1, 0.08, 1);
-		glColor3ub(0,0, 200);
+		glColor3ub(0,0, 255);
 		
+		//face
 		drawElipse(Vector2f(0,0),0.8,1);
 		
-		glColor3ub(255,0, 0);
+		//eyes
+		//make eyes flicker
+		if(frame % 50 <= 25){
+			glColor3ub(255,0, 0);
+		}else{
+			glColor3ub(0,255,0);
+		}
+		
 		drawElipse(Vector2f(0.15,0.7),0.1,0.05);
 		drawElipse(Vector2f(0.55,0.7),0.1,0.05);
 		drawRectangle(Vector2f(0.4,0.4),0.05,0.15);
@@ -259,7 +271,7 @@ void getInput() {
 	}
 	
 	//fire bullets from ship
-	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
+	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
 		bullet.reset();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
@@ -267,10 +279,10 @@ void getInput() {
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
-	}*/
+	}
 	
-	//fire bombs from ship
-	if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
+	//fire bombs from ship using 'E' as key press for firing bombs
+	if(glfwGetKey(69) && previousBombTime <= 0){
 		Bomb & bomb = shipBombs.allocate();
 		bomb.reset();
 		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship

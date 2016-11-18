@@ -9,6 +9,8 @@
 #include "math.h"
 
 void Ship::update(float dt)  {
+	//update frame
+	frame++;
 	//update position
 	position += dt * velocity;
 	
@@ -34,11 +36,14 @@ void Ship::update(float dt)  {
 
 
 void Bullet::update(float dt)  {
+	//frame update 
+	frame++;
 	//update position
 	position += dt * velocity;
 }
 
 void Bomb::update(float dt)  {
+	frame++;
 //motion for shooting bombs from enemies
    velocity += Vector2f(0,-9.8 * dt);
    position += velocity * dt;
@@ -47,7 +52,7 @@ void Bomb::update(float dt)  {
 void Enemy::update(float dt) {
 	velocity.x = -0.2;
 	position += dt * velocity;
-	
+	frame++;
 	//update bounding box position
 	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
 	minPoints = Vector2f(position.x,position.y);

@@ -70,7 +70,7 @@ public:
 	Vector2f velocity;
 	Vector2f maxPoints;		//maxPoints holds the max X and Y for the rectangle hit box of entities.
 	Vector2f minPoints;		//minPoints holds the min X and Y for the rectangle hit box of entities.
-	
+	unsigned int frame;		//holds animation frame for enemies
 	virtual void render () const = 0;
 
 	virtual void update (float dt) = 0;

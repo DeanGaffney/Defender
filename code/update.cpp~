@@ -9,40 +9,61 @@
 #include "math.h"
 
 void Ship::update(float dt)  {
+	//update frame
+	frame++;
 	//update position
 	position += dt * velocity;
 	
 	//restrict ship movement on the x and y axis between the screen
 	position.x = clamp(position.x, level->position.x, level->position.x + ASPECT*0.66);
 	position.y = clamp(position.y, level->position.y, level->position.y + ASPECT*0.52);
+
+	//update bounding box position
+	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
+	minPoints = Vector2f(position.x,position.y);
+
+	cout << "Ships health is : " << health << endl;
+	cout << "Lives remaining : " << lives << endl;
+	//brief timer to avoid any damage taken multiplying
+	if(damageState == RECOVERING)damageRecoveryTime -= dt;
+
+	//check if player is dead
+	if(health <= 0)removeLife();
+
+	//check lives
+	if(lives <= 0)ship.state = Entity::DEAD;
 }
 
 
 void Bullet::update(float dt)  {
+	//frame update 
+	frame++;
 	//update position
 	position += dt * velocity;
 }
 
 void Bomb::update(float dt)  {
+	frmae++;
 //motion for shooting bombs from enemies
    velocity += Vector2f(0,-9.8 * dt);
    position += velocity * dt;
 }
 
-void Enemy::update(float dt)  {
+void Enemy::update(float dt) {
 	velocity.x = -0.2;
 	position += dt * velocity;
-	
+	frame++;
 	//update bounding box position
 	maxPoints = Vector2f(position.x + (1.0 * 0.1),position.y + (1.0 * 0.08));
 	minPoints = Vector2f(position.x,position.y);
 	
 	//allow enemy to fire bullets
-	if(enemyFireTime <= 0 && isInScreen(this)){
+	if(enemyFireTime <= 0){
 		//fire and reset timer
 		Bullet & enemyBullet = enemyBullets.allocate();
+		enemyBullet.reset();
 		enemyBullet.position = position;
-		enemyBullet.velocity.x = velocity.x * 2;
+		enemyBullet.velocity.x = velocity.x * 5;
 		enemyFireTime = 2;
 	}else{
 		enemyFireTime -= dt;
@@ -95,7 +116,7 @@ void Enemy::update(float dt)  {
 	
 
 //make sure game object is within width of screen
-bool isInScreen(Entity gameObject){
+bool isInScreen(Entity &gameObject){
 	return gameObject.position.x < level->position.x + ASPECT &&
 		   gameObject.position.x > 0;
 }
@@ -107,8 +128,7 @@ void checkCollisions(){
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(0.0*0.0,0.0*0.08),false)) || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.6*0.08),true))  || 
   	  (checkPointCollisionWithLevel(ship.position + Vector2f(1.0*0.1,0.4*0.08),false))){
-		//do things (lose life or stuff)
-		cout << "ship collided at one of the corner points" << endl;
+		ship.takeDamage(5);
 	}
 	
 	//check player collision with enemies
@@ -117,13 +137,18 @@ void checkCollisions(){
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints) ||
 			isPointInsideRectangle(ship.position + Vector2f(0.0*0.1,1.0*0.08),level->enemies[enemy].maxPoints,level->enemies[enemy].minPoints)){
-				cout << "Player hit enemy" << endl;
-				//do something kill player or lose life
+			ship.takeDamage(10);
+			level->enemies[enemy].state = Entity::DEAD;
 		}
 	}
 	
-	//check enemy collision with enemy bullets
-	//TODO
+	//check player collision with enemy bullets
+	for(int enemyBullet = 0; enemyBullet < enemyBullets.size(); enemyBullet++){
+		if(isPointInsideRectangle(enemyBullets[enemyBullet].position, ship.maxPoints, ship.minPoints)){
+			ship.takeDamage(15);
+			enemyBullets[enemyBullet].state = Entity::DEAD;
+		}
+	}
 	
 	//check player bullets collision with enemy
 	for(int bullet = 0; bullet < shipBullets.size();bullet++){

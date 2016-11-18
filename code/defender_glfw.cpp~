@@ -57,9 +57,13 @@ void Ship::render() const {
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.1, 0.08, 1);
-		glColor3ub(0,200, 0);
-		glColor3ub(255,0, 0);
-		
+		//glColor3ub(0,200, 0);
+		//make ship flicker
+		if(frame % 100 <= 50){
+			glColor3ub(255,0, 0);
+		}else{
+			glColor3ub(0,255,0);
+		}
 		glBegin(GL_QUADS);      
    				glVertex3f(0.0, 0.0, 0.0);
     			glVertex3f(1.0, 0.4, 0.0);
@@ -110,13 +114,8 @@ void Bomb::render() const {
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.03, 0.03, 1);
 		glColor3ub(255,255,0);			//draws enemy red
-		glBegin(GL_QUADS);      
-   			glVertex3f(0.0, 0.0, 0.0);
-    		glVertex3f(1.0, 0.0, 0.0);
-    		glVertex3f(1.0, 1.0, 0.0);
-    		glVertex3f(0.0, 1.0, 0.0);
-			glEnd();
-		glPopMatrix();
+		drawElipse(Vector2f(0,0),1,1);
+	glPopMatrix();
 }
 
 
@@ -124,11 +123,19 @@ void Enemy::render() const {
 	glPushMatrix();
 		glTranslatef(position.x, position.y, 0.0f);
 		glScalef(0.1, 0.08, 1);
-		glColor3ub(0,0, 200);
+		glColor3ub(0,0, 255);
 		
+		//face
 		drawElipse(Vector2f(0,0),0.8,1);
 		
-		glColor3ub(255,0, 0);
+		//eyes
+		//make eyes flicker
+		if(frame % 50 <= 25){
+			glColor3ub(255,0, 0);
+		}else{
+			glColor3ub(0,255,0);
+		}
+		
 		drawElipse(Vector2f(0.15,0.7),0.1,0.05);
 		drawElipse(Vector2f(0.55,0.7),0.1,0.05);
 		drawRectangle(Vector2f(0.4,0.4),0.05,0.15);
@@ -179,6 +186,16 @@ void renderRadar(){
 	glPopMatrix();
 }
 
+void renderHealthBar(){
+	glPushMatrix();
+	glColor3ub(0,0,0);
+	drawRectangle(Vector2f(0,0.0),HEALTH_BAR_WIDTH,0.05);
+
+	glColor3ub(255,0, 0);
+	drawRectangle(Vector2f(0,0.0),(HEALTH_BAR_WIDTH * ship.health) / 100,0.05);
+	glPopMatrix();
+}
+
 int initGraphics() {
 	
 	glfwInit(); 
@@ -204,7 +221,6 @@ int initGraphics() {
 	previousBulletTime = 0.0;
 	enemyFireTime = 0.0;
 	return 0;		// success
-	
 }
 
 int deinitGraphics() {
@@ -230,6 +246,7 @@ void render() {
     	for(int bullet = 0;bullet < enemyBullets.size();++bullet)enemyBullets[bullet].render();
 	glPopMatrix();
 	renderRadar();
+	renderHealthBar();
     glfwSwapBuffers(); 
 }
 
@@ -256,20 +273,23 @@ void getInput() {
 	//fire bullets from ship
 	if(glfwGetKey(GLFW_KEY_SPACE) && previousBulletTime <= 0){
 		Bullet & bullet = shipBullets.allocate();
+		bullet.reset();
 		bullet.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
+		bullet.velocity.x = 2;
 		previousBulletTime = 0.1;
 	}else{
 		previousBulletTime -= dt;
 	}
 	
-	//fire bombs from ship
-	/*if(glfwGetKey(GLFW_KEY_SPACE) && previousBombTime <= 0){
+	//fire bombs from ship using 'E' as key press for firing bombs
+	if(glfwGetKey(69) && previousBombTime <= 0){
 		Bomb & bomb = shipBombs.allocate();
+		bomb.reset();
 		bomb.position = (ship.position + Vector2f(1.0*0.1,0.5*0.08));	//front of ship
 		previousBombTime = 0.5;
 	}else{
 		previousBombTime -= dt;
-	}*/
+	}
 }
 #endif
 
