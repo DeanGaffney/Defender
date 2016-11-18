@@ -96,16 +96,7 @@ void Enemy::update(float dt) {
 	  	*/
 	}else{
 	//For Tracking enemies
-	  	
-	  	//get height of rectangle
-		//get distance from ceiling
-		//get bottom point of rectangle and get distance
-		//compare distances
-		// move accordingly
-		
-		/*float topDistance = distancePointFromLevel(position + Vector2f(0.0,1.0*0.08),true);
-		float bottomDistance = distancePointFromLevel(position,false);
-		velocity.y = (topDistance > bottomDistance) ? 0.2 : -0.2;*/
+	
 	}
 }
 	
