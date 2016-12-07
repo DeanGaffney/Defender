@@ -30,7 +30,7 @@ int main() {
 	bool done = false;
 	string levels [] = {"awkward","test","windy"};
 	int currentLevel = 0;
-	const int NUMBER_OF_LEVELS = 2;
+	const int NUMBER_OF_LEVELS = 3;
 	level = new Level(levels[currentLevel]);
 	cout << *level;
 	cout << *level;
@@ -74,22 +74,21 @@ int main() {
 				update();
 				render();
 				getInput();
-				if (ship.state==Entity::DEAD)gameState = LEVEL_OVER;
-				// want it for when player reaches end of level
-				//if player loses life restart level
-				//if no lives left then go to game over do not restart level
+				if (ship.state==Entity::DEAD){gameState = LEVEL_OVER;break;}
 				
-				//key press '2' for second level
+				//key press '2' to nagivate through levels
 				if(glfwGetKey(50)){
 					gameState = LEVEL_START;
 					currentLevel++;
+					break;
 				}
 				//player reaches end of level,switch level and there are still levels to play
-				else if(ship.position.x >= level->ground[level->groundLength-3].x && currentLevel + 1 != NUMBER_OF_LEVELS){
+				if(ship.position.x >= level->ground[level->groundLength-3].x && currentLevel + 1 != NUMBER_OF_LEVELS){
 					gameState = LEVEL_START;
 					currentLevel++;
 					ship.resetLives();
-				}else if(ship.position.x >= level->ground[level->groundLength-3].x && currentLevel + 1 == NUMBER_OF_LEVELS)gameState = GAME_OVER;
+					break;
+				}if(ship.position.x >= level->ground[level->groundLength-3].x && currentLevel + 1 == NUMBER_OF_LEVELS){gameState = GAME_OVER;break;};
 				break;
 			}
 
